@@ -5,12 +5,12 @@ using System.Runtime.InteropServices;
 // 有关程序集的常规信息通过以下
 // 特性集控制。更改这些特性值可修改
 // 与程序集关联的信息。
-[assembly: AssemblyTitle("RWP.Util")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyTitle("FCP.Util")]
+[assembly: AssemblyDescription("Util for FCP(Fluent Compute Platform)")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("Microsoft")]
-[assembly: AssemblyProduct("RWP.Util")]
-[assembly: AssemblyCopyright("Copyright © Microsoft 2015")]
+[assembly: AssemblyCompany("GreatBillows")]
+[assembly: AssemblyProduct("FCP.Util")]
+[assembly: AssemblyCopyright("Copyright © GreatBillows 2016")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
