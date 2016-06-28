@@ -7,7 +7,7 @@ namespace FCP.Util
     /// <summary>
     /// Newtonsoft.Json Serializer
     /// </summary>
-    public class JsonSerializer : BaseSerializer, ISerializer
+    internal class JsonSerializer : BaseSerializer, ISerializer
     {
         public JsonSerializer()
         {

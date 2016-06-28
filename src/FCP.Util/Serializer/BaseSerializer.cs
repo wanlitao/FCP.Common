@@ -1,6 +1,6 @@
 ﻿namespace FCP.Util
 {
-    public abstract class BaseSerializer : ISerializer
+    internal abstract class BaseSerializer : ISerializer
     {
         #region Serialize
         public byte[] Serialize<TValue>(TValue value)

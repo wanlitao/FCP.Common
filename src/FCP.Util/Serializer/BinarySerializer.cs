@@ -7,7 +7,7 @@ namespace FCP.Util
     /// <summary>
     /// Binary Serializer
     /// </summary>
-    public class BinarySerializer : BaseSerializer, ISerializer
+    internal class BinarySerializer : BaseSerializer, ISerializer
     {
         #region Serialize
         protected override byte[] SerializeInternal<TValue>(TValue value)
