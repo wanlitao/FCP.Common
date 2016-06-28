@@ -57,8 +57,10 @@
     <Compile Include="Log\LogFormatHelper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RegExp\RegexPatterns.cs" />
-    <Compile Include="Serializer\JsonSerializeHelper.cs" />
-    <Compile Include="Serializer\SerializerUtil.cs" />
+    <Compile Include="Serializer\BaseSerializer.cs" />
+    <Compile Include="Serializer\BinarySerializer.cs" />
+    <Compile Include="Serializer\ISerializer.cs" />
+    <Compile Include="Serializer\JsonSerializer.cs" />
     <Compile Include="Utilities\AppConfigUtil.cs" />
     <Compile Include="Utilities\DateTimeHelper.cs" />
     <Compile Include="Utilities\EnumHelper.cs" />
