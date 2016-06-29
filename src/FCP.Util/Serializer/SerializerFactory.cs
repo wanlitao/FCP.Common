@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
 
 namespace FCP.Util
 {
@@ -10,6 +11,14 @@ namespace FCP.Util
         public static ISerializer BinarySerializer { get { return _binarySerializer; } }
 
         public static ISerializer JsonSerializer { get { return _defaultJsonSerializer; } }
+
+        public static ISerializer GetJsonSerializer(string dateTimeFormat)
+        {
+            JsonSerializerSettings settings = new JsonSerializerSettings();
+            settings.Converters.Add(new IsoDateTimeConverter { DateTimeFormat = dateTimeFormat });
+
+            return GetJsonSerializer(settings);
+        }
 
         public static ISerializer GetJsonSerializer(JsonSerializerSettings settings)
         {
