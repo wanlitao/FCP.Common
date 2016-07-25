@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
-VisualStudioVersion = 14.0.25123.0
+VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "1.Base Utility", "1.Base Utility", "{D8B2C2E0-9F65-4C3A-AB4D-17F68C595CAD}"
 EndProject
@@ -16,6 +16,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FCP.Repository", "src\FCP.Repository\FCP.Repository.csproj", "{C8EF8CEC-AC5C-4D23-B7F6-BE57A01892D1}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FCP.Service", "src\FCP.Service\FCP.Service.csproj", "{8F9F749F-C496-414D-8C80-8D22FC6A376F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FCP.Util.Async", "src\FCP.Util.Async\FCP.Util.Async.csproj", "{0B53E664-6C1C-4FEC-9069-5F74A3AE83AB}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -39,6 +41,10 @@ Global
 		{8F9F749F-C496-414D-8C80-8D22FC6A376F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8F9F749F-C496-414D-8C80-8D22FC6A376F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8F9F749F-C496-414D-8C80-8D22FC6A376F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0B53E664-6C1C-4FEC-9069-5F74A3AE83AB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0B53E664-6C1C-4FEC-9069-5F74A3AE83AB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0B53E664-6C1C-4FEC-9069-5F74A3AE83AB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0B53E664-6C1C-4FEC-9069-5F74A3AE83AB}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -48,5 +54,6 @@ Global
 		{71472C56-2CE3-468C-A3DF-9B1E8D520134} = {C5A08264-EEBB-4A7D-B7A7-AA382E581112}
 		{C8EF8CEC-AC5C-4D23-B7F6-BE57A01892D1} = {C5A08264-EEBB-4A7D-B7A7-AA382E581112}
 		{8F9F749F-C496-414D-8C80-8D22FC6A376F} = {53DB19D9-F044-407B-8EBF-73472145E0F7}
+		{0B53E664-6C1C-4FEC-9069-5F74A3AE83AB} = {D8B2C2E0-9F65-4C3A-AB4D-17F68C595CAD}
 	EndGlobalSection
 EndGlobal
