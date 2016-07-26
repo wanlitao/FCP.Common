@@ -11,8 +11,8 @@
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>$description$</description>
     <copyright>$copyright$</copyright>
-    <dependencies>      
-      <dependency id="FCP.Repository" version="1.0.0" />
+    <dependencies>
+      <dependency id="FCP.Util" version="1.0.1" />
     </dependencies>    
   </metadata>
 </package>

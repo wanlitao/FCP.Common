@@ -5,11 +5,11 @@ using System.Runtime.InteropServices;
 // 有关程序集的一般信息由以下
 // 控制。更改这些特性值可修改
 // 与程序集关联的信息。
-[assembly: AssemblyTitle("FCP.Service")]
-[assembly: AssemblyDescription("Service for FCP(Fluent Compute Platform)")]
+[assembly: AssemblyTitle("FCP.Core")]
+[assembly: AssemblyDescription("Core for FCP(Fluent Compute Platform)")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("GreatBillows")]
-[assembly: AssemblyProduct("FCP.Service")]
+[assembly: AssemblyProduct("FCP.Core")]
 [assembly: AssemblyCopyright("Copyright © GreatBillows 2016")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
@@ -20,7 +20,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // 如果此项目向 COM 公开，则下列 GUID 用于类型库的 ID
-[assembly: Guid("8f9f749f-c496-414d-8c80-8d22fc6a376f")]
+[assembly: Guid("9ddbdaab-7ba3-4e11-a3e5-8969421893b3")]
 
 // 程序集的版本信息由下列四个值组成: 
 //
@@ -32,5 +32,5 @@ using System.Runtime.InteropServices;
 //可以指定所有这些值，也可以使用“生成号”和“修订号”的默认值，
 // 方法是按如下所示使用“*”: :
 // [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion("1.0.1.0")]
-[assembly: AssemblyFileVersion("1.0.1.0")]
+[assembly: AssemblyVersion("1.0.0.0")]
+[assembly: AssemblyFileVersion("1.0.0.0")]

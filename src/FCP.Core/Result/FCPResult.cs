@@ -1,6 +1,6 @@
 ﻿using FCP.Util;
 
-namespace FCP.Service
+namespace FCP.Core
 {
     /// <summary>
     /// FCP结果基类
