@@ -51,6 +51,7 @@
     <Compile Include="Encrypt\EncryptHelper.cs" />
     <Compile Include="Encrypt\EncryptUtil.cs" />
     <Compile Include="Expression\ExpressionUtil.cs" />
+    <Compile Include="Extension\DictionaryExtensions.cs" />
     <Compile Include="Extension\EnumerableExtension.cs" />
     <Compile Include="Extension\StringExtension.cs" />
     <Compile Include="Extension\TypeExtension.cs" />
