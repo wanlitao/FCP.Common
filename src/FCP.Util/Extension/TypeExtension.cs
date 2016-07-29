@@ -24,5 +24,31 @@ namespace FCP.Util
         {
             return type.IsClass && !type.IsAbstract;
         }
+
+        /// <summary>
+        /// 是否继承特定泛型类型
+        /// </summary>
+        /// <param name="type"></param>
+        /// <param name="genericType"></param>
+        /// <returns></returns>
+        public static bool IsGeneric(this Type type, Type genericType)
+        {
+            if (genericType == null)
+                throw new ArgumentNullException(nameof(genericType));
+
+            if (!genericType.IsGenericTypeDefinition)
+                throw new ArgumentException("generic type must be a GenericTypeDefinition");
+
+            if (type == null)
+                return false;
+
+            if (type == typeof(object))
+                return false;
+
+            if (type.IsGenericType && type.GetGenericTypeDefinition() == genericType)
+                return true;
+
+            return type.BaseType.IsGeneric(genericType);
+        }
     }
 }
