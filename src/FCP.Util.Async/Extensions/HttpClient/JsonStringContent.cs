@@ -8,22 +8,22 @@ namespace FCP.Util.Async
     {
         private const string defaultMediaType = "application/json";
 
-        internal JsonStringContent(string content)
+        public JsonStringContent(string content)
             : this(content, null)
         { }
 
-        internal JsonStringContent(string content, Encoding encoding)
+        public JsonStringContent(string content, Encoding encoding)
             : base(content, encoding, defaultMediaType)            
         { }
     }
 
     public class JsonStringContent<T> : JsonStringContent
     {
-        internal JsonStringContent(T value)
+        public JsonStringContent(T value)
             : this(value, null)
         { }
 
-        internal JsonStringContent(T value, Encoding encoding)
+        public JsonStringContent(T value, Encoding encoding)
             : base(GetSerializeJson(value), encoding)
         { }
 
