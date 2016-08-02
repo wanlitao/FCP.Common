@@ -66,6 +66,7 @@
     <Compile Include="Utilities\AppConfigUtil.cs" />
     <Compile Include="Utilities\DateTimeHelper.cs" />
     <Compile Include="Utilities\EnumHelper.cs" />
+    <Compile Include="Utilities\FluentUriBuilder.cs" />
     <Compile Include="Utilities\HttpUtil.cs" />
     <Compile Include="Utilities\RandUtil.cs" />
     <Compile Include="Utilities\StreamHelper.cs" />
