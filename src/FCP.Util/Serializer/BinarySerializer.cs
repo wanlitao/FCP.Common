@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Text;
 
@@ -24,7 +25,7 @@ namespace FCP.Util
         {
             var bytes = SerializeInternal(value);
 
-            return Encoding.UTF8.GetString(bytes);
+            return Convert.ToBase64String(bytes);
         }
         #endregion
 
@@ -41,7 +42,7 @@ namespace FCP.Util
 
         protected override TValue DeserializeStringInternal<TValue>(string dataStr)
         {
-            var bytes = Encoding.UTF8.GetBytes(dataStr);
+            var bytes = Convert.FromBase64String(dataStr);
 
             return DeserializeInternal<TValue>(bytes);
         }
