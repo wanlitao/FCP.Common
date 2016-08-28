@@ -1,6 +1,6 @@
 ﻿using System.Reflection;
 
-namespace FCP.Data
+namespace FCP.Entity
 {
     /// <summary>
     /// 属性映射接口

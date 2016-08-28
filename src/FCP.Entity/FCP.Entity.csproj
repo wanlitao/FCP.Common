@@ -4,11 +4,11 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{C8EF8CEC-AC5C-4D23-B7F6-BE57A01892D1}</ProjectGuid>
+    <ProjectGuid>{72736C2D-5DBD-4E39-A239-D49D6783AAE5}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>FCP.Repository</RootNamespace>
-    <AssemblyName>FCP.Repository</AssemblyName>
+    <RootNamespace>FCP.Entity</RootNamespace>
+    <AssemblyName>FCP.Entity</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -30,12 +30,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="FCP.FluentData, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\FCP.FluentData.1.0.0.0\lib\net40\FCP.FluentData.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Numerics" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -43,24 +40,14 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Entity\IRepository.cs" />
-    <Compile Include="Entity\Repository.cs" />
+    <Compile Include="Mapper\AutoClassMapper.cs" />
+    <Compile Include="Mapper\ClassMapper.cs" />
+    <Compile Include="Mapper\Enum\KeyType.cs" />
+    <Compile Include="Mapper\Interface\IClassMapper.cs" />
+    <Compile Include="Mapper\Interface\IPropertyMap.cs" />
+    <Compile Include="Mapper\PropertyMap.cs" />
+    <Compile Include="ReflectionHelper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="UnitOfWork\UnitOfWork.cs" />
-    <Compile Include="UnitOfWork\IUnitOfWork.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\FCP.Data\FCP.Data.csproj">
-      <Project>{71472c56-2ce3-468c-a3df-9b1e8d520134}</Project>
-      <Name>FCP.Data</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\FCP.Entity\FCP.Entity.csproj">
-      <Project>{72736C2D-5DBD-4E39-A239-D49D6783AAE5}</Project>
-      <Name>FCP.Entity</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

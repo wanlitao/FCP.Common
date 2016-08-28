@@ -1,5 +1,5 @@
 ﻿
-namespace FCP.Data
+namespace FCP.Entity
 {
     /// <summary>
     /// Used by ClassMapper to determine which entity property represents the key.

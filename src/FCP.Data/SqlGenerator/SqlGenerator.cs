@@ -5,6 +5,7 @@ using System.Linq.Expressions;
 using System.Collections.Generic;
 using System.Reflection;
 using FCP.Util;
+using FCP.Entity;
 
 namespace FCP.Data
 {

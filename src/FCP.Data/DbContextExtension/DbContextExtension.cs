@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Reflection;
 using System.Collections.Concurrent;
 using System.Linq.Expressions;
+using FCP.Entity;
 
 namespace FCP.Data
 {

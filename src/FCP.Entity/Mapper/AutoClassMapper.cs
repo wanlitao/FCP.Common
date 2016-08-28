@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace FCP.Data
+﻿namespace FCP.Entity
 {
     /// <summary>
     /// Automatically maps an entity to a table using a combination of reflection and naming conventions for keys.

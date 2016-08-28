@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using FCP.Util;
 using ExprTranslator.Query;
 using System.Reflection;
+using FCP.Entity;
 
 namespace FCP.Data
 {

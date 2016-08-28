@@ -6,7 +6,7 @@ using System.Linq.Expressions;
 using System.Numerics;
 using System.Reflection;
 
-namespace FCP.Data
+namespace FCP.Entity
 {
     /// <summary>
     /// 实体映射

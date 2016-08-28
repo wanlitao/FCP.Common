@@ -10,9 +10,6 @@
     <projectUrl>https://github.com/wanlitao/FCP.Common</projectUrl>    
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>$description$</description>
-    <copyright>$copyright$</copyright>
-    <dependencies>      
-      <dependency id="FCP.Repository" version="1.0.2" />
-    </dependencies>    
+    <copyright>$copyright$</copyright>        
   </metadata>
 </package>

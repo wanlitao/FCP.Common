@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
-namespace FCP.Data
+namespace FCP.Entity
 {
     /// <summary>
     /// 实体映射接口
