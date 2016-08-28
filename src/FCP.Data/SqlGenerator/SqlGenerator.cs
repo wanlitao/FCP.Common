@@ -325,11 +325,7 @@ namespace FCP.Data
             if (propertyExpression == null)
                 return string.Empty;
 
-            var propertyInfo = ReflectionHelper.getProperty(propertyExpression) as PropertyInfo;
-            if (propertyInfo == null)
-                return string.Empty;
-
-            return propertyInfo.Name;
+            return ReflectionHelper.parsePropertyName(propertyExpression);            
         }
 
         /// <summary>

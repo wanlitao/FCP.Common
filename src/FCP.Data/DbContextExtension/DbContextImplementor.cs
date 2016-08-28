@@ -156,11 +156,11 @@ namespace FCP.Data
             {
                 foreach (var propertyValue in propertyValues)
                 {
-                    var propertyInfo = ReflectionHelper.getProperty(propertyValue.Key) as PropertyInfo;
-                    if (propertyInfo == null)
+                    var propertyName = ReflectionHelper.parsePropertyName(propertyValue.Key);
+                    if (propertyName.isNullOrEmpty())
                         continue;
                     
-                    var propertyMap = sqlGenerator.getProperty<TEntity>(propertyInfo.Name);
+                    var propertyMap = sqlGenerator.getProperty<TEntity>(propertyName);
                     newPropertyValueDic.Add(propertyMap, propertyValue.Value);
                 }
             }

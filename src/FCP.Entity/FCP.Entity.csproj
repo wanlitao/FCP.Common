@@ -48,7 +48,8 @@
     <Compile Include="Mapper\Interface\IClassMapper.cs" />
     <Compile Include="Mapper\Interface\IPropertyMap.cs" />
     <Compile Include="Mapper\PropertyMap.cs" />
-    <Compile Include="ReflectionHelper.cs" />
+    <Compile Include="Common\PropertyExpressionParser.cs" />
+    <Compile Include="Common\ReflectionHelper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

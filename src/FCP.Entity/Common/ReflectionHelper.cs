@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Linq;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Reflection;
@@ -32,15 +34,46 @@ namespace FCP.Entity
                                    typeof(byte[])
                                };
 
+        private static readonly ConcurrentDictionary<Type, IDictionary<string, PropertyInfo>> _cachedProperties = new ConcurrentDictionary<Type, IDictionary<string, PropertyInfo>>();
+
+        #region 获取属性
+        public static PropertyInfo[] getProperties(Type type)
+        {
+            var propertyDict = getPropertyDict(type);
+
+            return propertyDict.Select(m => m.Value).ToArray();
+        }
+
+        public static IDictionary<string, PropertyInfo> getPropertyDict(Type type)
+        {
+            var propertyDict = _cachedProperties.GetOrAdd(type, buildPropertyDictionary);
+
+            return propertyDict;
+        }
+
+        private static IDictionary<string, PropertyInfo> buildPropertyDictionary(Type type)
+        {
+            var result = new Dictionary<string, PropertyInfo>();
+
+            var properties = type.GetProperties();
+            foreach (var property in properties)
+            {
+                result.Add(property.Name, property);
+            }
+            return result;
+        }
+        #endregion
+
+        #region 属性表达式
         /// <summary>
-        /// 从Lambda表达式中获取MemberInfo
+        /// 从Lambda表达式中获取PropertyInfo
         /// </summary>
         /// <param name="lambda"></param>
         /// <returns></returns>
-        public static MemberInfo getProperty(LambdaExpression lambda)
+        public static PropertyInfo parseProperty(LambdaExpression lambda)
         {
             Expression expr = lambda;
-            for (; ; )
+            for (;;)
             {
                 switch (expr.NodeType)
                 {
@@ -52,13 +85,38 @@ namespace FCP.Entity
                         break;
                     case ExpressionType.MemberAccess:
                         MemberExpression memberExpression = (MemberExpression)expr;
-                        MemberInfo mi = memberExpression.Member;
-                        return mi;
+                        return memberExpression.Member as PropertyInfo;
                     default:
                         return null;
                 }
             }
         }
+
+        /// <summary>
+        /// 解析属性名
+        /// </summary>
+        /// <param name="propertyExpr"></param>
+        /// <returns></returns>
+        public static string parsePropertyName(LambdaExpression propertyExpr)
+        {
+            var propertyInfo = parseProperty(propertyExpr);
+
+            return propertyInfo?.Name;
+        }
+
+        /// <summary>
+        /// 解析属性值
+        /// </summary>
+        /// <param name="item"></param>
+        /// <param name="propertyExpr">属性表达式</param>
+        /// <returns></returns>
+        public static object parsePropertyValue(object item, LambdaExpression propertyExpr)
+        {
+            var propertyInfo = parseProperty(propertyExpr);
+
+            return getPropertyValue(item, propertyInfo);
+        }
+        #endregion
 
         #region 获取属性值
         /// <summary>
@@ -99,30 +157,38 @@ namespace FCP.Entity
             }
             return item;
         }
-
-        /// <summary>
-        /// 获取属性值
-        /// </summary>
-        /// <param name="item"></param>
-        /// <param name="propertyExpr">属性表达式</param>
-        /// <returns></returns>
-        public static object getPropertyValue(object item, LambdaExpression propertyExpr)
-        {
-            var propertyInfo = getProperty(propertyExpr) as PropertyInfo;
-
-            return getPropertyValue(item, propertyInfo);
-        }
         #endregion
+
+        #region Type
+        public static bool isNullable(Type type)
+        {
+            if (type.IsGenericType &&
+                type.GetGenericTypeDefinition() == typeof(Nullable<>))
+                return true;
+
+            return false;
+        }
+
+        public static Type getPropertyType(PropertyInfo property)
+        {
+            var propertyType = property.PropertyType;
+
+            if (isNullable(propertyType))
+                return propertyType.GetGenericArguments()[0];
+
+            return propertyType;
+        }
 
         public static bool isSimpleType(Type type)
         {
             Type actualType = type;
-            if (type.IsGenericType && type.GetGenericTypeDefinition() == typeof(Nullable<>))
+            if (isNullable(type))
             {
                 actualType = type.GetGenericArguments()[0];
             }
 
             return _simpleTypes.Contains(actualType);
         }
+        #endregion
     }
 }

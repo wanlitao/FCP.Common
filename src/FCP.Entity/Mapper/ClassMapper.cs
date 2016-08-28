@@ -79,7 +79,7 @@ namespace FCP.Entity
             var type = entityType;
             bool hasDefinedKey = properties.Any(p => p.keyType != KeyType.notAKey);
             PropertyMap keyMap = null;
-            foreach (var propertyInfo in type.GetProperties())
+            foreach (var propertyInfo in ReflectionHelper.getProperties(type))
             {
                 if (properties.Any(p => string.Equals(p.name, propertyInfo.Name, StringComparison.InvariantCultureIgnoreCase)))
                 {
@@ -116,7 +116,7 @@ namespace FCP.Entity
         /// </summary>
         protected PropertyMap mapProperty(Expression<Func<TEntity, object>> expression)
         {
-            PropertyInfo propertyInfo = ReflectionHelper.getProperty(expression) as PropertyInfo;
+            var propertyInfo = ReflectionHelper.parseProperty(expression);
             return mapProperty(propertyInfo);
         }
 
