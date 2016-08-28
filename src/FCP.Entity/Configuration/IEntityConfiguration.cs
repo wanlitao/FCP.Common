@@ -1,14 +1,13 @@
-﻿using FCP.Entity;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Reflection;
 
-namespace FCP.Data
+namespace FCP.Entity
 {
     /// <summary>
-    /// Fluent数据库配置接口
+    /// Entity配置 接口
     /// </summary>
-    public interface IDbConfiguration
+    public interface IEntityConfiguration
     {
         /// <summary>
         /// 默认实体Mapper类型

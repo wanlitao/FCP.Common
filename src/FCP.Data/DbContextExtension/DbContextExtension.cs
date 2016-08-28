@@ -13,8 +13,8 @@ namespace FCP.Data
     /// </summary>
     public static class DbContextExtension
     {
-        private static IDbConfiguration _dbConfiguration;
-        private static Func<IDbConfiguration, IDbProvider, IDbContextImplementor> _dbContextImplFactory;
+        private static IEntityConfiguration _entityConfiguration;
+        private static Func<IEntityConfiguration, IDbProvider, IDbContextImplementor> _dbContextImplFactory;
         /// <summary>
         /// 数据库context扩展实现 缓存
         /// </summary>
@@ -22,17 +22,17 @@ namespace FCP.Data
 
         static DbContextExtension()
         {
-            configure(new DbConfiguration());
+            configure(new EntityConfiguration());
         }
 
         #region 静态参数配置
         /// <summary>
         /// Configure DapperExtensions extension methods.
         /// </summary>
-        /// <param name="dbConfiguration"></param>        
-        public static void configure(IDbConfiguration dbConfiguration)
+        /// <param name="entityConfiguration"></param>        
+        public static void configure(IEntityConfiguration entityConfiguration)
         {
-            _dbConfiguration = dbConfiguration;
+            _entityConfiguration = entityConfiguration;
             _dbContextImplCache.Clear();
         }
 
@@ -43,7 +43,7 @@ namespace FCP.Data
         /// <param name="mappingAssemblies"></param>        
         public static void configure(Type defaultClassMapper, IList<Assembly> mappingAssemblies)
         {
-            configure(new DbConfiguration(defaultClassMapper, mappingAssemblies));
+            configure(new EntityConfiguration(defaultClassMapper, mappingAssemblies));
         }
 
         /// <summary>
@@ -53,18 +53,18 @@ namespace FCP.Data
         {
             get
             {
-                return _dbConfiguration.defaultClassMapper;
+                return _entityConfiguration.defaultClassMapper;
             }
             set
             {
-                configure(value, _dbConfiguration.mappingAssemblies);
+                configure(value, _entityConfiguration.mappingAssemblies);
             }
         }
 
         /// <summary>
         /// Get or sets the Dapper Extensions Implementation Factory.
         /// </summary>
-        public static Func<IDbConfiguration, IDbProvider, IDbContextImplementor> dbContextImplFactory
+        public static Func<IEntityConfiguration, IDbProvider, IDbContextImplementor> dbContextImplFactory
         {
             get
             {
@@ -78,7 +78,7 @@ namespace FCP.Data
             set
             {
                 _dbContextImplFactory = value;
-                configure(_dbConfiguration);
+                configure(_entityConfiguration);
             }
         }
 
@@ -88,7 +88,7 @@ namespace FCP.Data
         /// <param name="assemblies"></param>
         public static void setMappingAssemblies(IList<Assembly> assemblies)
         {
-            configure(_dbConfiguration.defaultClassMapper, assemblies);
+            configure(_entityConfiguration.defaultClassMapper, assemblies);
         }
         #endregion
 
@@ -104,7 +104,7 @@ namespace FCP.Data
             IDbContextImplementor dbContextImpl = null;
             if (!_dbContextImplCache.TryGetValue(providerName, out dbContextImpl))
             {
-                dbContextImpl = dbContextImplFactory(_dbConfiguration, fluentDbProvider);
+                dbContextImpl = dbContextImplFactory(_entityConfiguration, fluentDbProvider);
                 if (dbContextImpl != null)
                 {
                     _dbContextImplCache.TryAdd(providerName, dbContextImpl);  //添加到缓存

@@ -17,7 +17,7 @@ namespace FCP.Data
     {
         private static ExprQueryTranslatorFactory exprQueryTranslatorFactory = new ExprQueryTranslatorFactory();
 
-        public DbContextImplementor(IDbConfiguration configuration, IDbProvider fluentDbProvider)
+        public DbContextImplementor(IEntityConfiguration configuration, IDbProvider fluentDbProvider)
         {
             sqlGenerator = new SqlGenerator(configuration, fluentDbProvider);
 

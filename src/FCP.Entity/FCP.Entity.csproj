@@ -40,6 +40,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Configuration\EntityConfiguration.cs" />
+    <Compile Include="Configuration\IEntityConfiguration.cs" />
     <Compile Include="Mapper\AutoClassMapper.cs" />
     <Compile Include="Mapper\ClassMapper.cs" />
     <Compile Include="Mapper\Enum\KeyType.cs" />

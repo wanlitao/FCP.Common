@@ -12,7 +12,7 @@ namespace FCP.Data
     public interface ISqlGenerator
     {
         #region 属性
-        IDbConfiguration dbConfiguration { get; }
+        IEntityConfiguration entityConfiguration { get; }
 
         IDbProvider dbProvider { get; }
         #endregion        

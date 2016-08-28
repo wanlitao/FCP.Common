@@ -14,14 +14,14 @@ namespace FCP.Data
     /// </summary>
     public class SqlGenerator : ISqlGenerator
     {
-        public SqlGenerator(IDbConfiguration configuration, IDbProvider dbProvider)
+        public SqlGenerator(IEntityConfiguration configuration, IDbProvider dbProvider)
         {
-            dbConfiguration = configuration;
+            entityConfiguration = configuration;
             this.dbProvider = dbProvider;
         }
 
         #region 属性
-        public IDbConfiguration dbConfiguration { get; private set; }
+        public IEntityConfiguration entityConfiguration { get; private set; }
 
         public IDbProvider dbProvider { get; private set; }
         #endregion        
@@ -35,7 +35,7 @@ namespace FCP.Data
         /// <returns></returns>
         public string getTableName<TEntity>(string alias) where TEntity : class
         {
-            IClassMapper entityMapper = dbConfiguration.getClassMapper<TEntity>();
+            IClassMapper entityMapper = entityConfiguration.getClassMapper<TEntity>();
 
             return getTableName(entityMapper, alias);
         }
@@ -96,7 +96,7 @@ namespace FCP.Data
         public string getColumnName<TEntity>(IPropertyMap propertyMap, bool includeTableName,
             bool includeAlias) where TEntity : class
         {
-            IClassMapper entityMapper = dbConfiguration.getClassMapper<TEntity>();
+            IClassMapper entityMapper = entityConfiguration.getClassMapper<TEntity>();
 
             return getColumnName(entityMapper, propertyMap, includeTableName, includeAlias);
         }
@@ -129,7 +129,7 @@ namespace FCP.Data
             if (propertyName.isNullOrEmpty())
                 return string.Empty;
 
-            IClassMapper entityMapper = dbConfiguration.getClassMapper(entityType);
+            IClassMapper entityMapper = entityConfiguration.getClassMapper(entityType);
             IPropertyMap propertyMap = entityMapper.properties.SingleOrDefault(
                 p => p.name.Equals(propertyName, StringComparison.InvariantCultureIgnoreCase));
             if (propertyMap == null)
@@ -178,7 +178,7 @@ namespace FCP.Data
         /// <returns></returns>
         public IEnumerable<IPropertyMap> getKeyProperties<TEntity>() where TEntity : class
         {
-            IClassMapper entityMapper = dbConfiguration.getClassMapper<TEntity>();
+            IClassMapper entityMapper = entityConfiguration.getClassMapper<TEntity>();
             var keyPropertyMaps = entityMapper.properties.Where(p => p.keyType != KeyType.notAKey);
 
             if (keyPropertyMaps.isEmpty())
@@ -200,7 +200,7 @@ namespace FCP.Data
             if (propertyName.isNullOrEmpty())
                 return null;
 
-            IClassMapper entityMapper = dbConfiguration.getClassMapper<TEntity>();
+            IClassMapper entityMapper = entityConfiguration.getClassMapper<TEntity>();
             IPropertyMap propertyMap = entityMapper.properties.SingleOrDefault(
                 p => p.name.Equals(propertyName, StringComparison.InvariantCultureIgnoreCase));
 
@@ -256,7 +256,7 @@ namespace FCP.Data
         public IEnumerable<IPropertyMap> getSelectProperties<TEntity>(
             params Expression<Func<TEntity, object>>[] ignorePropertyExpressions) where TEntity : class
         {
-            IClassMapper entityMapper = dbConfiguration.getClassMapper<TEntity>();
+            IClassMapper entityMapper = entityConfiguration.getClassMapper<TEntity>();
             var selectProperties = entityMapper.properties.Where(p => !p.ignored);  //排除忽略的属性
 
             var ignorePropertyNames = getPropertyNamesByExpression(ignorePropertyExpressions);
@@ -277,7 +277,7 @@ namespace FCP.Data
         public IEnumerable<IPropertyMap> getUpdateProperties<TEntity>(
             params Expression<Func<TEntity, object>>[] includePropertyExpressions) where TEntity : class
         {
-            IClassMapper entityMapper = dbConfiguration.getClassMapper<TEntity>();
+            IClassMapper entityMapper = entityConfiguration.getClassMapper<TEntity>();
             var updateProperties = entityMapper.properties.Where(
                 p => !p.ignored && !p.isReadOnly && p.keyType == KeyType.notAKey);  //排除主键和只读忽略的属性
 
@@ -299,7 +299,7 @@ namespace FCP.Data
         public IEnumerable<IPropertyMap> getInsertProperties<TEntity>(
             params Expression<Func<TEntity, object>>[] ignorePropertyExpressions) where TEntity : class
         {
-            IClassMapper entityMapper = dbConfiguration.getClassMapper<TEntity>();
+            IClassMapper entityMapper = entityConfiguration.getClassMapper<TEntity>();
             var insertProperties = entityMapper.properties.Where(
                 p => !p.ignored && !p.isReadOnly && p.keyType != KeyType.identity);  //排除自增主键和只读忽略的属性
 

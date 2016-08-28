@@ -1,16 +1,15 @@
-﻿using FCP.Entity;
-using System;
+﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 
-namespace FCP.Data
+namespace FCP.Entity
 {
     /// <summary>
-    /// Fluent数据库配置
+    /// Entity配置
     /// </summary>
-    public class DbConfiguration : IDbConfiguration
+    public class EntityConfiguration : IEntityConfiguration
     {
         /// <summary>
         /// 实体Mapper缓存
@@ -18,19 +17,19 @@ namespace FCP.Data
         private readonly ConcurrentDictionary<Type, IClassMapper> _classMappers = new ConcurrentDictionary<Type, IClassMapper>();
 
         #region 构造函数
-        public DbConfiguration()
+        public EntityConfiguration()
             : this(typeof(AutoClassMapper<>))
         {
 
         }
 
-        public DbConfiguration(Type defaultClassMapper)
+        public EntityConfiguration(Type defaultClassMapper)
             : this(defaultClassMapper, null)
         {
 
         }
 
-        public DbConfiguration(Type defaultClassMapper, IList<Assembly> mappingAssemblies)
+        public EntityConfiguration(Type defaultClassMapper, IList<Assembly> mappingAssemblies)
         {
             this.defaultClassMapper = defaultClassMapper;
             this.mappingAssemblies = mappingAssemblies ?? new List<Assembly>();

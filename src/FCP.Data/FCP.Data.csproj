@@ -53,8 +53,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Configuration\DbConfiguration.cs" />
-    <Compile Include="Configuration\IDbConfiguration.cs" />
     <Compile Include="DbContext\DbContextFactory.cs" />
     <Compile Include="DbContext\IDbContextFactory.cs" />
     <Compile Include="ExprTranslator\ExprQueryTranslatorFactory.cs" />
