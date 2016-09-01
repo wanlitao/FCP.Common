@@ -12,7 +12,7 @@ namespace FCP.Util
         /// <returns></returns>
         public static bool Is<T>(this Type type)
         {
-            return typeof(T).IsAssignableFrom(type);
+            return type.Is(typeof(T));
         }
 
         /// <summary>
@@ -26,29 +26,37 @@ namespace FCP.Util
         }
 
         /// <summary>
-        /// 是否继承特定泛型类型
+        /// 是否继承特定类型
         /// </summary>
         /// <param name="type"></param>
-        /// <param name="genericType"></param>
+        /// <param name="baseType"></param>
         /// <returns></returns>
-        public static bool IsGeneric(this Type type, Type genericType)
+        public static bool Is(this Type type, Type baseType)
         {
-            if (genericType == null)
-                throw new ArgumentNullException(nameof(genericType));
-
-            if (!genericType.IsGenericTypeDefinition)
-                throw new ArgumentException("generic type must be a GenericTypeDefinition");
-
+            if (baseType == null)
+                throw new ArgumentNullException(nameof(baseType));
+           
             if (type == null)
                 return false;
+            
+            if (baseType.IsAssignableFrom(type))
+                return true;
 
             if (type == typeof(object))
                 return false;
 
-            if (type.IsGenericType && type.GetGenericTypeDefinition() == genericType)
+            if (baseType.IsGenericTypeDefinition &&
+                type.IsGenericType && type.GetGenericTypeDefinition() == baseType)
                 return true;
 
-            return type.BaseType.IsGeneric(genericType);
+            var interfaceTypes = type.GetInterfaces();
+            foreach(var interfaceType in interfaceTypes)
+            {
+                if (interfaceType.Is(baseType))
+                    return true;
+            }
+
+            return type.BaseType.Is(baseType);
         }
     }
 }
