@@ -1,5 +1,4 @@
-﻿using FCP.Data;
-using FCP.Entity;
+﻿using FCP.Entity;
 using FluentData;
 using System;
 using System.Collections.Generic;

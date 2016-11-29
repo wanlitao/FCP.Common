@@ -31,6 +31,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -40,7 +41,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Paging\FCPPageData.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Result\DoResult\FCPDoResult.cs" />
+    <Compile Include="Result\DoResult\FCPDoResultHelper.cs" />
+    <Compile Include="Result\DoResult\FCPDoResultType.cs" />
     <Compile Include="Result\FCPResult.cs" />
   </ItemGroup>
   <ItemGroup>
