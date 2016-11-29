@@ -13,7 +13,7 @@
     <copyright>$copyright$</copyright>
     <dependencies>
       <dependency id="FCP.Util" version="1.0.6" />
-      <dependency id="FCP.Entity" version="1.0.2" />
+      <dependency id="FCP.Entity" version="1.0.3" />
     </dependencies>
   </metadata>
 </package>

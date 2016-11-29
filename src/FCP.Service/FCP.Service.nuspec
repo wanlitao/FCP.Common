@@ -12,7 +12,7 @@
     <description>$description$</description>
     <copyright>$copyright$</copyright>
     <dependencies>      
-      <dependency id="FCP.Repository" version="1.0.5" />
+      <dependency id="FCP.Repository" version="1.0.6" />
     </dependencies>    
   </metadata>
 </package>
