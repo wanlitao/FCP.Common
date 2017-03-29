@@ -9,6 +9,7 @@ namespace FCP.Util
     {
         private const string queryParamSplit = "&";
         private const string queryParamOperator = "=";
+        private const string queryStringPrefix = "?";
 
         private UriBuilder _uriBuilder;
         private IList<string> _appendSegments;
@@ -28,9 +29,8 @@ namespace FCP.Util
                 Scheme(uri.Scheme)
                     .Host(uri.Host)
                     .Port(uri.Port)
-                    .Path(uri.AbsolutePath);
-                                
-                ParseQueryParams(uri.Query);
+                    .Path(uri.AbsolutePath)
+                    .Query(uri.Query);
             }
 
             return this;
@@ -74,10 +74,17 @@ namespace FCP.Util
             return this;
         }
 
-        public FluentUriBuilder Query(string queryString)
-        {            
-            ParseQueryParams(queryString);
+        public FluentUriBuilder Query(string query)
+        {
+            _uriBuilder.Query = query;
             
+            return this;
+        }
+
+        public FluentUriBuilder QueryString(string queryString)
+        {
+            ParseQueryParams(queryString);
+
             return this;
         }
 
@@ -132,8 +139,12 @@ namespace FCP.Util
                 _uriBuilder.Path = CombineUriPath(_uriBuilder.Path, appendPath);
             }
 
-            _uriBuilder.Query = string.Join(queryParamSplit, _paramCollection.AllKeys.SelectMany(
-                key => _paramCollection.GetValues(key).Select(value => FormatQueryParam(key, value))));           
+            if (_paramCollection.Count > 0)
+            {
+                var appendQueryString = string.Join(queryParamSplit, _paramCollection.AllKeys.SelectMany(
+                    key => _paramCollection.GetValues(key).Select(value => FormatQueryParam(key, value))));
+                _uriBuilder.Query = string.Join(queryParamSplit, _uriBuilder.Query.TrimStart(queryStringPrefix.ToCharArray()), appendQueryString);
+            }
         }
 
         /// <summary>
