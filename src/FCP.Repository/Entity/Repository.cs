@@ -13,22 +13,14 @@ namespace FCP.Repository
     /// <typeparam name="TEnitty"></typeparam>
     public class Repository<TEntity> : IRepository<TEntity> where TEntity : class
     {
-        private readonly IDbContext _dbContext;
-
-        /// <summary>
-        /// 默认数据库会话工厂
-        /// </summary>
-        private static readonly IDbContextFactory defaultDbContextFactory = new DbContextFactory();
+        private readonly IDbContext _dbContext;        
 
         #region 构造函数
-        public Repository()
-            : this(defaultDbContextFactory.openDbContext())
-        {
-
-        }
-
         public Repository(IDbContext dbContext)
         {
+            if (dbContext == null)
+                throw new ArgumentNullException(nameof(dbContext));
+
             _dbContext = dbContext;
         }
         #endregion

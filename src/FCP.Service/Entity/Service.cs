@@ -1,4 +1,5 @@
 ﻿using FCP.Repository;
+using System;
 
 namespace FCP.Service
 {
@@ -11,14 +12,11 @@ namespace FCP.Service
         protected readonly IRepository<TEntity> _repository;
 
         #region 构造函数
-        public Service()
-            : this(new Repository<TEntity>())
-        {
-
-        }
-       
         public Service(IRepository<TEntity> entityRepository)
         {
+            if (entityRepository == null)
+                throw new ArgumentNullException(nameof(entityRepository));
+
             _repository = entityRepository;
         }
         #endregion

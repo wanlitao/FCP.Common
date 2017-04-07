@@ -75,7 +75,7 @@ namespace FCP.Repository
         /// <param name="propertyWheres">where条件</param>
         /// <returns></returns>
         int deleteByWhere(params KeyValuePair<Expression<Func<TEntity, object>>, object>[] propertyWheres);
-        #endregion
+        #endregion 
 
         #region 更新
         /// <summary>
