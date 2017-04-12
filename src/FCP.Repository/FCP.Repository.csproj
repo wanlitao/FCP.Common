@@ -58,6 +58,10 @@
       <Project>{72736C2D-5DBD-4E39-A239-D49D6783AAE5}</Project>
       <Name>FCP.Entity</Name>
     </ProjectReference>
+    <ProjectReference Include="..\FCP.Util\FCP.Util.csproj">
+      <Project>{FC081E71-8C77-4858-877F-4439B41462AC}</Project>
+      <Name>FCP.Util</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

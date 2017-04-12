@@ -1,8 +1,7 @@
 ﻿using FCP.Data;
-using FCP.Entity;
+using FCP.Util;
 using FluentData;
 using System;
-using System.Collections.Generic;
 using System.Linq.Expressions;
 
 namespace FCP.Repository
@@ -85,7 +84,9 @@ namespace FCP.Repository
         /// <returns></returns>
         public virtual TKey insert<TKey>(TEntity entity, params Expression<Func<TEntity, object>>[] ignorePropertyExpressions)
         {
-            if (entity == null) return default(TKey);
+            if (entity == null)
+                throw new ArgumentNullException(nameof(entity));
+
             return dbContext.insertEntity(entity, ignorePropertyExpressions).ExecuteReturnLastId<TKey>();
         }
 
@@ -97,7 +98,9 @@ namespace FCP.Repository
         /// <returns></returns>
         public virtual int deleteByKey(object id)
         {
-            if (id == null) return 0;
+            if (id == null)
+                throw new ArgumentNullException(nameof(id));
+
             return dbContext.deleteEntityByKey<TEntity>(id).Execute();
         }
 
@@ -108,19 +111,27 @@ namespace FCP.Repository
         /// <returns></returns>
         public virtual int delete(TEntity entity)
         {
-            if (entity == null) return 0;
+            if (entity == null)
+                throw new ArgumentNullException(nameof(entity));
+
             return dbContext.deleteEntity(entity).Execute();
         }
 
         /// <summary>
         /// 按where条件删除
         /// </summary>
-        /// <typeparam name="TEntity"></typeparam>
-        /// <param name="propertyWheres">where条件</param>
+        /// <param name="entity"></param>
+        /// <param name="includePropertyExpressions">where属性表达式</param>
         /// <returns></returns>
-        public virtual int deleteByWhere(params KeyValuePair<Expression<Func<TEntity, object>>, object>[] propertyWheres)
+        public virtual int deleteByWhere(TEntity entity, params Expression<Func<TEntity, object>>[] includePropertyExpressions)
         {
-            return dbContext.deleteEntityByWhere(propertyWheres).Execute();
+            if (entity == null)
+                throw new ArgumentNullException(nameof(entity));
+
+            if (includePropertyExpressions.isEmpty())
+                throw new ArgumentNullException(nameof(includePropertyExpressions));
+
+            return dbContext.deleteEntityByWhere(entity, includePropertyExpressions).Execute();
         }
         #endregion
 
@@ -133,47 +144,66 @@ namespace FCP.Repository
         /// <returns></returns>
         public virtual int update(TEntity entity, params Expression<Func<TEntity, object>>[] includePropertyExpressions)
         {
-            if (entity == null) return 0;
+            if (entity == null)
+                throw new ArgumentNullException(nameof(entity));
+
+            if (includePropertyExpressions.isEmpty())
+                throw new ArgumentNullException(nameof(includePropertyExpressions));
+
             return dbContext.updateEntity(entity, includePropertyExpressions).Execute();
         }
 
         /// <summary>
-        /// 按主键更新
+        /// 更新实体（忽略属性）
         /// </summary>
-        /// <typeparam name="TEntity"></typeparam>        
-        /// <param name="id">主键值</param>
-        /// <param name="propertyUpdates">更新字段值</param>
+        /// <param name="entity"></param>
+        /// <param name="ignorePropertyExpressions">忽略的属性表达式</param>
         /// <returns></returns>
-        public virtual int updateByKey(object id, params KeyValuePair<Expression<Func<TEntity, object>>, object>[] propertyUpdates)
+        public virtual int updateIgnore(TEntity entity, params Expression<Func<TEntity, object>>[] ignorePropertyExpressions)
         {
-            if (id == null) return 0;
-            return dbContext.updateEntityByKey<TEntity>(id, propertyUpdates).Execute();
+            if (entity == null)
+                throw new ArgumentNullException(nameof(entity));
+
+            return dbContext.updateEntityIgnore(entity, ignorePropertyExpressions).Execute();
         }
 
         /// <summary>
         /// 按主键更新
-        /// </summary>
-        /// <typeparam name="TEntity"></typeparam>        
+        /// </summary>        
         /// <param name="id">主键值</param>
-        /// <param name="propertyUpdates">更新字段值</param>
+        /// <param name="entity"></param>
+        /// <param name="includePropertyExpressions">更新的属性表达式</param>
         /// <returns></returns>
-        public virtual int updateByKey(object id, params KeyValuePair<IPropertyMap, object>[] propertyUpdates)
+        public virtual int updateByKey(object id, TEntity entity, params Expression<Func<TEntity, object>>[] includePropertyExpressions)
         {
-            if (id == null) return 0;
-            return dbContext.updateEntityByKey<TEntity>(id, propertyUpdates).Execute();
+            if (id == null)
+                throw new ArgumentNullException(nameof(id));
+
+            if (entity == null)
+                throw new ArgumentNullException(nameof(entity));
+
+            if (includePropertyExpressions.isEmpty())
+                throw new ArgumentNullException(nameof(includePropertyExpressions));
+
+            return dbContext.updateEntityByKey(id, entity, includePropertyExpressions).Execute();
         }
 
         /// <summary>
-        /// 按where条件更新
-        /// </summary>
-        /// <typeparam name="TEntity"></typeparam>       
-        /// <param name="propertyWheres">where条件</param>
-        /// <param name="propertyUpdates">更新字段值</param>
+        /// 按主键更新（忽略属性）
+        /// </summary>        
+        /// <param name="id">主键值</param>
+        /// <param name="entity"></param>
+        /// <param name="ignorePropertyExpressions">忽略的属性表达式</param>
         /// <returns></returns>
-        public virtual int updateByWhere(KeyValuePair<Expression<Func<TEntity, object>>, object>[] propertyWheres,
-            params KeyValuePair<Expression<Func<TEntity, object>>, object>[] propertyUpdates)
+        public virtual int updateIgnoreByKey(object id, TEntity entity, params Expression<Func<TEntity, object>>[] ignorePropertyExpressions)
         {
-            return dbContext.updateEntityByWhere(propertyWheres, propertyUpdates).Execute();
+            if (id == null)
+                throw new ArgumentNullException(nameof(id));
+
+            if (entity == null)
+                throw new ArgumentNullException(nameof(entity));
+
+            return dbContext.updateEntityIgnoreByKey(id, entity, ignorePropertyExpressions).Execute();
         }
         #endregion
 

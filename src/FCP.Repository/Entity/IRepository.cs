@@ -1,7 +1,5 @@
-﻿using FCP.Entity;
-using FluentData;
+﻿using FluentData;
 using System;
-using System.Collections.Generic;
 using System.Linq.Expressions;
 
 namespace FCP.Repository
@@ -71,10 +69,10 @@ namespace FCP.Repository
         /// <summary>
         /// 按where条件删除
         /// </summary>
-        /// <typeparam name="TEntity"></typeparam>
-        /// <param name="propertyWheres">where条件</param>
+        /// <param name="entity"></param>
+        /// <param name="includePropertyExpressions">where属性表达式</param>
         /// <returns></returns>
-        int deleteByWhere(params KeyValuePair<Expression<Func<TEntity, object>>, object>[] propertyWheres);
+        int deleteByWhere(TEntity entity, params Expression<Func<TEntity, object>>[] includePropertyExpressions);
         #endregion 
 
         #region 更新
@@ -87,32 +85,30 @@ namespace FCP.Repository
         int update(TEntity entity, params Expression<Func<TEntity, object>>[] includePropertyExpressions);
 
         /// <summary>
-        /// 按主键更新
+        /// 更新实体（忽略属性）
         /// </summary>
-        /// <typeparam name="TEntity"></typeparam>        
-        /// <param name="id">主键值</param>
-        /// <param name="propertyUpdates">更新字段值</param>
+        /// <param name="entity"></param>
+        /// <param name="ignorePropertyExpressions">忽略的属性表达式</param>
         /// <returns></returns>
-        int updateByKey(object id, params KeyValuePair<Expression<Func<TEntity, object>>, object>[] propertyUpdates);
+        int updateIgnore(TEntity entity, params Expression<Func<TEntity, object>>[] ignorePropertyExpressions);
 
         /// <summary>
         /// 按主键更新
-        /// </summary>
-        /// <typeparam name="TEntity"></typeparam>        
+        /// </summary>        
         /// <param name="id">主键值</param>
-        /// <param name="propertyUpdates">更新字段值</param>
+        /// <param name="entity"></param>
+        /// <param name="includePropertyExpressions">更新的属性表达式</param>
         /// <returns></returns>
-        int updateByKey(object id, params KeyValuePair<IPropertyMap, object>[] propertyUpdates);
+        int updateByKey(object id, TEntity entity, params Expression<Func<TEntity, object>>[] includePropertyExpressions);
 
         /// <summary>
-        /// 按where条件更新
-        /// </summary>
-        /// <typeparam name="TEntity"></typeparam>        
-        /// <param name="propertyWheres">where条件</param>
-        /// <param name="propertyUpdates">更新字段值</param>
+        /// 按主键更新（忽略属性）
+        /// </summary>        
+        /// <param name="id">主键值</param>
+        /// <param name="entity"></param>
+        /// <param name="ignorePropertyExpressions">忽略的属性表达式</param>
         /// <returns></returns>
-        int updateByWhere(KeyValuePair<Expression<Func<TEntity, object>>, object>[] propertyWheres,
-            params KeyValuePair<Expression<Func<TEntity, object>>, object>[] propertyUpdates);
+        int updateIgnoreByKey(object id, TEntity entity, params Expression<Func<TEntity, object>>[] ignorePropertyExpressions);
         #endregion
 
         /// <summary>
