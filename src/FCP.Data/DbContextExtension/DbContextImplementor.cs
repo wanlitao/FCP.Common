@@ -126,7 +126,7 @@ namespace FCP.Data
         /// 生成主键值集合
         /// </summary>
         /// <typeparam name="TEntity"></typeparam>
-        /// <param name="id">主键值</param>
+        /// <param name="entity">实体</param>
         /// <returns></returns>
         protected KeyValuePair<IPropertyMap, object>[] getKeyPropertyValues<TEntity>(TEntity entity) where TEntity : class
         {
@@ -145,30 +145,32 @@ namespace FCP.Data
         /// 生成属性值集合
         /// </summary>
         /// <typeparam name="TEntity"></typeparam>
-        /// <param name="propertyWheres"></param>
+        /// <param name="entity">实体</param>
+        /// <param name="propertyExpressions">属性表达式</param>
         /// <returns></returns>
-        protected KeyValuePair<IPropertyMap, object>[] getPropertyValues<TEntity>(
-            params KeyValuePair<Expression<Func<TEntity, object>>, object>[] propertyValues) where TEntity : class
+        protected KeyValuePair<IPropertyMap, object>[] getPropertyValues<TEntity>(TEntity entity,
+            params Expression<Func<TEntity, object>>[] propertyExpressions) where TEntity : class
         {
-            var newPropertyValueDic = new Dictionary<IPropertyMap, object>();
+            var propertyValueDic = new Dictionary<IPropertyMap, object>();
 
-            if (propertyValues.isNotEmpty())
+            if (propertyExpressions.isNotEmpty())
             {
-                foreach (var propertyValue in propertyValues)
+                foreach(var propertyExpr in propertyExpressions)
                 {
-                    var propertyName = ReflectionHelper.parsePropertyName(propertyValue.Key);
-                    if (propertyName.isNullOrEmpty())
+                    var propertyInfo = ReflectionHelper.parseProperty(propertyExpr);
+                    if (propertyInfo == null)
                         continue;
-                    
-                    var propertyMap = sqlGenerator.getProperty<TEntity>(propertyName);
-                    newPropertyValueDic.Add(propertyMap, propertyValue.Value);
+
+                    var propertyMap = sqlGenerator.getProperty<TEntity>(propertyInfo.Name);                    
+                    var propertyValue = ReflectionHelper.getPropertyValue(entity, propertyInfo);
+                    propertyValueDic.Add(propertyMap, propertyValue);
                 }
             }
 
-            return newPropertyValueDic.ToArray();
-        }        
+            return propertyValueDic.ToArray();
+        }
         #endregion
-        
+
         #endregion
 
         #region 获取属性表达式
@@ -402,7 +404,7 @@ namespace FCP.Data
         /// <returns></returns>
         public IDeleteBuilder deleteEntity<TEntity>(IDbContext dbContext, TEntity entity) where TEntity : class
         {
-            var keyPropertyWheres = getKeyPropertyValues<TEntity>(entity);
+            var keyPropertyWheres = getKeyPropertyValues(entity);
 
             return deleteWhere<TEntity>(dbContext, keyPropertyWheres);
         }
@@ -412,14 +414,15 @@ namespace FCP.Data
         /// </summary>
         /// <typeparam name="TEntity"></typeparam>
         /// <param name="dbContext"></param>
-        /// <param name="propertyWheres">where条件</param>
+        /// <param name="entity">实体</param>
+        /// <param name="includePropertyExpressions">where属性表达式</param>
         /// <returns></returns>
-        public IDeleteBuilder deleteEntityByWhere<TEntity>(IDbContext dbContext,
-            params KeyValuePair<Expression<Func<TEntity, object>>, object>[] propertyWheres) where TEntity : class
+        public IDeleteBuilder deleteEntityByWhere<TEntity>(IDbContext dbContext, TEntity entity,
+            params Expression<Func<TEntity, object>>[] includePropertyExpressions) where TEntity : class
         {
-            var newPropertyWheres = getPropertyValues(propertyWheres);            
+            var propertyWheres = getPropertyValues(entity, includePropertyExpressions);            
 
-            return deleteWhere<TEntity>(dbContext, newPropertyWheres);
+            return deleteWhere<TEntity>(dbContext, propertyWheres);
         }
 
         /// <summary>
@@ -458,7 +461,7 @@ namespace FCP.Data
         public IUpdateBuilder updateEntity<TEntity>(IDbContext dbContext, TEntity entity,
             params Expression<Func<TEntity, object>>[] includePropertyExpressions) where TEntity : class
         {
-            var keyPropertyWheres = getKeyPropertyValues<TEntity>(entity);
+            var keyPropertyWheres = getKeyPropertyValues(entity);
 
             var propertyUpdateDic = new Dictionary<IPropertyMap, object>();
             var updatePropertyMaps = sqlGenerator.getUpdateProperties(includePropertyExpressions);
@@ -475,19 +478,17 @@ namespace FCP.Data
         }
 
         /// <summary>
-        /// 按主键更新
+        /// 更新实体（忽略属性）
         /// </summary>
         /// <typeparam name="TEntity"></typeparam>
         /// <param name="dbContext"></param>
-        /// <param name="id">主键值</param>
-        /// <param name="propertyUpdates">更新字段值</param>
+        /// <param name="entity">实体</param>
+        /// <param name="ignorePropertyExpressions">忽略的属性表达式</param>
         /// <returns></returns>
-        public IUpdateBuilder updateEntityByKey<TEntity>(IDbContext dbContext, object id,
-            params KeyValuePair<Expression<Func<TEntity, object>>, object>[] propertyUpdates) where TEntity : class
-        {            
-            var newPropertyUpdates = getPropertyValues(propertyUpdates);
-
-            return updateEntityByKey<TEntity>(dbContext, id, newPropertyUpdates);
+        public IUpdateBuilder updateEntityIgnore<TEntity>(IDbContext dbContext, TEntity entity,
+            params Expression<Func<TEntity, object>>[] ignorePropertyExpressions) where TEntity : class
+        {
+            throw new NotImplementedException();
         }
 
         /// <summary>
@@ -496,31 +497,28 @@ namespace FCP.Data
         /// <typeparam name="TEntity"></typeparam>
         /// <param name="dbContext"></param>
         /// <param name="id">主键值</param>
-        /// <param name="propertyUpdates">更新字段值</param>
+        /// <param name="entity">实体</param>
+        /// <param name="includePropertyExpressions">更新的属性表达式</param>
         /// <returns></returns>
         public IUpdateBuilder updateEntityByKey<TEntity>(IDbContext dbContext, object id,
-            params KeyValuePair<IPropertyMap, object>[] propertyUpdates) where TEntity : class
+            TEntity entity, params Expression<Func<TEntity, object>>[] includePropertyExpressions) where TEntity : class
         {
-            var keyPropertyWheres = getKeyPropertyValues<TEntity>(id);            
-
-            return updateWhere<TEntity>(dbContext, keyPropertyWheres, propertyUpdates);
+            throw new NotImplementedException();
         }
 
         /// <summary>
-        /// 按where条件更新
+        /// 按主键更新（忽略属性）
         /// </summary>
         /// <typeparam name="TEntity"></typeparam>
         /// <param name="dbContext"></param>
-        /// <param name="propertyWheres">where条件</param>
-        /// <param name="propertyUpdates">更新字段值</param>
+        /// <param name="id">主键值</param>
+        /// <param name="entity">实体</param>
+        /// <param name="ignorePropertyExpressions">忽略的属性表达式</param>
         /// <returns></returns>
-        public IUpdateBuilder updateEntityByWhere<TEntity>(IDbContext dbContext, KeyValuePair<Expression<Func<TEntity, object>>, object>[] propertyWheres,
-            params KeyValuePair<Expression<Func<TEntity, object>>, object>[] propertyUpdates) where TEntity : class
+        public IUpdateBuilder updateEntityIgnoreByKey<TEntity>(IDbContext dbContext, object id,
+            TEntity entity, params Expression<Func<TEntity, object>>[] ignorePropertyExpressions) where TEntity : class
         {
-            var newPropertyWheres = getPropertyValues(propertyWheres);
-            var newPropertyUpdates = getPropertyValues(propertyUpdates);            
-
-            return updateWhere<TEntity>(dbContext, newPropertyWheres, newPropertyUpdates);
+            throw new NotImplementedException();
         }
 
         /// <summary>

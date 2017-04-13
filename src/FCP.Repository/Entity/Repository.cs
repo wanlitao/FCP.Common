@@ -48,7 +48,9 @@ namespace FCP.Repository
         /// <returns></returns>
         public virtual TEntity getByKey(object id)
         {
-            if (id == null) return null;
+            if (id == null)
+                throw new ArgumentNullException(nameof(id));
+
             return dbContext.selectEntityByKey<TEntity>(id).QuerySingle();
         }
 

@@ -136,7 +136,7 @@ namespace FCP.Data
             params Expression<Func<TEntity, object>>[] ignorePropertyExpressions) where TEntity : class
         {
             IDbContextImplementor dbContextImpl = dbContext.dbContextImpl();
-            return dbContextImpl.selectEntityByKey<TEntity>(dbContext, id, ignorePropertyExpressions);
+            return dbContextImpl.selectEntityByKey(dbContext, id, ignorePropertyExpressions);
         }
 
         /// <summary>
@@ -151,7 +151,7 @@ namespace FCP.Data
             params Expression<Func<TEntity, object>>[] ignorePropertyExpressions) where TEntity : class
         {
             IDbContextImplementor dbContextImpl = dbContext.dbContextImpl();
-            return dbContextImpl.selectEntityByWhere<TEntity>(dbContext, wherePredicate, ignorePropertyExpressions);
+            return dbContextImpl.selectEntityByWhere(dbContext, wherePredicate, ignorePropertyExpressions);
         }
 
         /// <summary>
@@ -195,7 +195,7 @@ namespace FCP.Data
         public static IDeleteBuilder deleteEntity<TEntity>(this IDbContext dbContext, TEntity entity) where TEntity : class
         {
             IDbContextImplementor dbContextImpl = dbContext.dbContextImpl();
-            return dbContextImpl.deleteEntity<TEntity>(dbContext, entity);
+            return dbContextImpl.deleteEntity(dbContext, entity);
         }
 
         /// <summary>
@@ -203,13 +203,14 @@ namespace FCP.Data
         /// </summary>
         /// <typeparam name="TEntity"></typeparam>
         /// <param name="dbContext">数据库context</param>
-        /// <param name="propertyWheres">where条件</param>
+        /// <param name="entity">实体</param>
+        /// <param name="includePropertyExpressions">where属性表达式</param>
         /// <returns></returns>
-        public static IDeleteBuilder deleteEntityByWhere<TEntity>(this IDbContext dbContext,
-            params KeyValuePair<Expression<Func<TEntity, object>>, object>[] propertyWheres) where TEntity : class
+        public static IDeleteBuilder deleteEntityByWhere<TEntity>(this IDbContext dbContext, TEntity entity,
+            params Expression<Func<TEntity, object>>[] includePropertyExpressions) where TEntity : class
         {
             IDbContextImplementor dbContextImpl = dbContext.dbContextImpl();
-            return dbContextImpl.deleteEntityByWhere<TEntity>(dbContext, propertyWheres);
+            return dbContextImpl.deleteEntityByWhere(dbContext, entity, includePropertyExpressions);
         }
         #endregion
 
@@ -226,7 +227,22 @@ namespace FCP.Data
             params Expression<Func<TEntity, object>>[] includePropertyExpressions) where TEntity : class
         {
             IDbContextImplementor dbContextImpl = dbContext.dbContextImpl();
-            return dbContextImpl.updateEntity<TEntity>(dbContext, entity, includePropertyExpressions);
+            return dbContextImpl.updateEntity(dbContext, entity, includePropertyExpressions);
+        }
+
+        /// <summary>
+        /// 更新实体（忽略属性）
+        /// </summary>
+        /// <typeparam name="TEntity"></typeparam>
+        /// <param name="dbContext"></param>
+        /// <param name="entity">实体</param>
+        /// <param name="ignorePropertyExpressions">忽略的属性表达式</param>
+        /// <returns></returns>
+        public static IUpdateBuilder updateEntityIgnore<TEntity>(this IDbContext dbContext, TEntity entity,
+            params Expression<Func<TEntity, object>>[] ignorePropertyExpressions) where TEntity : class
+        {
+            IDbContextImplementor dbContextImpl = dbContext.dbContextImpl();
+            return dbContextImpl.updateEntityIgnore(dbContext, entity, ignorePropertyExpressions);
         }
 
         /// <summary>
@@ -235,43 +251,30 @@ namespace FCP.Data
         /// <typeparam name="TEntity"></typeparam>
         /// <param name="dbContext"></param>
         /// <param name="id">主键值</param>
-        /// <param name="propertyUpdates">更新字段值</param>
+        /// <param name="entity">实体</param>
+        /// <param name="includePropertyExpressions">更新的属性表达式</param>
         /// <returns></returns>
         public static IUpdateBuilder updateEntityByKey<TEntity>(this IDbContext dbContext, object id,
-            params KeyValuePair<Expression<Func<TEntity, object>>, object>[] propertyUpdates) where TEntity : class
+            TEntity entity, params Expression<Func<TEntity, object>>[] includePropertyExpressions) where TEntity : class
         {
             IDbContextImplementor dbContextImpl = dbContext.dbContextImpl();
-            return dbContextImpl.updateEntityByKey<TEntity>(dbContext, id, propertyUpdates);
+            return dbContextImpl.updateEntityByKey(dbContext, id, entity, includePropertyExpressions);
         }
 
         /// <summary>
-        /// 按主键更新
+        /// 按主键更新（忽略属性）
         /// </summary>
         /// <typeparam name="TEntity"></typeparam>
         /// <param name="dbContext"></param>
         /// <param name="id">主键值</param>
-        /// <param name="propertyUpdates">更新字段值</param>
+        /// <param name="entity">实体</param>
+        /// <param name="ignorePropertyExpressions">忽略的属性表达式</param>
         /// <returns></returns>
-        public static IUpdateBuilder updateEntityByKey<TEntity>(this IDbContext dbContext, object id,
-            params KeyValuePair<IPropertyMap, object>[] propertyUpdates) where TEntity : class
+        public static IUpdateBuilder updateEntityIgnoreByKey<TEntity>(this IDbContext dbContext, object id,
+            TEntity entity, params Expression<Func<TEntity, object>>[] ignorePropertyExpressions) where TEntity : class
         {
             IDbContextImplementor dbContextImpl = dbContext.dbContextImpl();
-            return dbContextImpl.updateEntityByKey<TEntity>(dbContext, id, propertyUpdates);
-        }
-
-        /// <summary>
-        /// 按where条件更新
-        /// </summary>
-        /// <typeparam name="TEntity"></typeparam>
-        /// <param name="dbContext"></param>
-        /// <param name="propertyWheres">where条件</param>
-        /// <param name="propertyUpdates">更新字段值</param>
-        /// <returns></returns>
-        public static IUpdateBuilder updateEntityByWhere<TEntity>(this IDbContext dbContext, KeyValuePair<Expression<Func<TEntity, object>>, object>[] propertyWheres,
-            params KeyValuePair<Expression<Func<TEntity, object>>, object>[] propertyUpdates) where TEntity : class
-        {
-            IDbContextImplementor dbContextImpl = dbContext.dbContextImpl();
-            return dbContextImpl.updateEntityByWhere<TEntity>(dbContext, propertyWheres, propertyUpdates);
+            return dbContextImpl.updateEntityIgnoreByKey(dbContext, id, entity, ignorePropertyExpressions);
         }
         #endregion
 
@@ -288,7 +291,7 @@ namespace FCP.Data
             params Expression<Func<TEntity, object>>[] ignorePropertyExpressions) where TEntity : class
         {
             IDbContextImplementor dbContextImpl = dbContext.dbContextImpl();
-            return dbContextImpl.insertEntity<TEntity>(dbContext, entity, ignorePropertyExpressions);
+            return dbContextImpl.insertEntity(dbContext, entity, ignorePropertyExpressions);
         }
         #endregion
     }
