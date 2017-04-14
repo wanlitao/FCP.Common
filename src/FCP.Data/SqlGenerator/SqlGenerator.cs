@@ -263,7 +263,7 @@ namespace FCP.Data
             if (ignorePropertyNames.isNotEmpty()) //忽略指定属性列表
             {
                 selectProperties = selectProperties.Where(p => !ignorePropertyNames.Contains(p.name));
-            }            
+            }
 
             return selectProperties;
         }
@@ -272,19 +272,26 @@ namespace FCP.Data
         /// 获取更新的属性
         /// </summary>
         /// <typeparam name="TEntity"></typeparam>
-        /// <param name="includePropertyExpressions">更新的属性表达式</param>
+        /// <param name="isExclude">是否排除</param>
+        /// <param name="propertyExpressions">属性表达式</param>
         /// <returns></returns>
-        public IEnumerable<IPropertyMap> getUpdateProperties<TEntity>(
-            params Expression<Func<TEntity, object>>[] includePropertyExpressions) where TEntity : class
+        public IEnumerable<IPropertyMap> getUpdateProperties<TEntity>(bool isExclude,
+            params Expression<Func<TEntity, object>>[] propertyExpressions) where TEntity : class
         {
             IClassMapper entityMapper = entityConfiguration.getClassMapper<TEntity>();
             var updateProperties = entityMapper.properties.Where(
                 p => !p.ignored && !p.isReadOnly && p.keyType == KeyType.notAKey);  //排除主键和只读忽略的属性
 
-            var includePropertyNames = getPropertyNamesByExpression(includePropertyExpressions);
-            if (includePropertyNames.isNotEmpty()) //只获取指定更新的属性列表
-            {               
-                updateProperties = updateProperties.Where(p => includePropertyNames.Contains(p.name));
+            var propertyNames = getPropertyNamesByExpression(propertyExpressions);
+            if (propertyNames.isNotEmpty())
+            {
+                Func<string, bool> propertyPredicate = (name) => propertyNames.Contains(name);
+                if (isExclude)
+                {
+                    propertyPredicate = (name) => !propertyNames.Contains(name);
+                }
+
+                updateProperties = updateProperties.Where(p => propertyPredicate(p.name));
             }
 
             return updateProperties;

@@ -95,10 +95,11 @@ namespace FCP.Data
         /// 获取更新的属性
         /// </summary>
         /// <typeparam name="TEntity"></typeparam>
-        /// <param name="includePropertyExpressions">更新的属性表达式</param>
+        /// <param name="isExclude">是否排除</param>
+        /// <param name="propertyExpressions">属性表达式</param>
         /// <returns></returns>
-        IEnumerable<IPropertyMap> getUpdateProperties<TEntity>(
-            params Expression<Func<TEntity, object>>[] includePropertyExpressions) where TEntity : class;
+        IEnumerable<IPropertyMap> getUpdateProperties<TEntity>(bool isExclude,
+            params Expression<Func<TEntity, object>>[] propertyExpressions) where TEntity : class;
 
         /// <summary>
         /// 获取插入的属性

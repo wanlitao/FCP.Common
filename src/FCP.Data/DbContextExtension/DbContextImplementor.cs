@@ -130,15 +130,9 @@ namespace FCP.Data
         /// <returns></returns>
         protected KeyValuePair<IPropertyMap, object>[] getKeyPropertyValues<TEntity>(TEntity entity) where TEntity : class
         {
-            var keyPropertyValueDic = new Dictionary<IPropertyMap, object>();
+            var keyPropertyMaps = sqlGenerator.getKeyProperties<TEntity>();
 
-            foreach (var keyPropertyMap in sqlGenerator.getKeyProperties<TEntity>())
-            {
-                var keyPropertyValue = ReflectionHelper.getPropertyValue(entity, keyPropertyMap.propertyInfo);
-                keyPropertyValueDic.Add(keyPropertyMap, keyPropertyValue);
-            }
-
-            return keyPropertyValueDic.ToArray();
+            return getPropertyValues(entity, keyPropertyMaps.ToArray());
         }
 
         /// <summary>
@@ -146,23 +140,18 @@ namespace FCP.Data
         /// </summary>
         /// <typeparam name="TEntity"></typeparam>
         /// <param name="entity">实体</param>
-        /// <param name="propertyExpressions">属性表达式</param>
+        /// <param name="propertyMaps"></param>
         /// <returns></returns>
         protected KeyValuePair<IPropertyMap, object>[] getPropertyValues<TEntity>(TEntity entity,
-            params Expression<Func<TEntity, object>>[] propertyExpressions) where TEntity : class
+            params IPropertyMap[] propertyMaps) where TEntity : class
         {
             var propertyValueDic = new Dictionary<IPropertyMap, object>();
 
-            if (propertyExpressions.isNotEmpty())
+            if (propertyMaps.isNotEmpty())
             {
-                foreach(var propertyExpr in propertyExpressions)
+                foreach(var propertyMap in propertyMaps.Where(m => m != null))
                 {
-                    var propertyInfo = ReflectionHelper.parseProperty(propertyExpr);
-                    if (propertyInfo == null)
-                        continue;
-
-                    var propertyMap = sqlGenerator.getProperty<TEntity>(propertyInfo.Name);                    
-                    var propertyValue = ReflectionHelper.getPropertyValue(entity, propertyInfo);
+                    var propertyValue = ReflectionHelper.getPropertyValue(entity, propertyMap.propertyInfo);
                     propertyValueDic.Add(propertyMap, propertyValue);
                 }
             }
@@ -420,7 +409,8 @@ namespace FCP.Data
         public IDeleteBuilder deleteEntityByWhere<TEntity>(IDbContext dbContext, TEntity entity,
             params Expression<Func<TEntity, object>>[] includePropertyExpressions) where TEntity : class
         {
-            var propertyWheres = getPropertyValues(entity, includePropertyExpressions);            
+            var propertyMaps = sqlGenerator.getProperties(includePropertyExpressions);
+            var propertyWheres = getPropertyValues(entity, propertyMaps.ToArray());            
 
             return deleteWhere<TEntity>(dbContext, propertyWheres);
         }
@@ -462,19 +452,11 @@ namespace FCP.Data
             params Expression<Func<TEntity, object>>[] includePropertyExpressions) where TEntity : class
         {
             var keyPropertyWheres = getKeyPropertyValues(entity);
+            
+            var updatePropertyMaps = sqlGenerator.getUpdateProperties(false, includePropertyExpressions);
+            var propertyUpdates = getPropertyValues(entity, updatePropertyMaps.ToArray());
 
-            var propertyUpdateDic = new Dictionary<IPropertyMap, object>();
-            var updatePropertyMaps = sqlGenerator.getUpdateProperties(includePropertyExpressions);
-            if (updatePropertyMaps.isNotEmpty())
-            {
-                foreach (var updatePropertyMap in updatePropertyMaps)
-                {
-                    var updatePropertyValue = ReflectionHelper.getPropertyValue(entity, updatePropertyMap.propertyInfo);
-                    propertyUpdateDic.Add(updatePropertyMap, updatePropertyValue);                    
-                }
-            }
-
-            return updateWhere<TEntity>(dbContext, keyPropertyWheres, propertyUpdateDic.ToArray());
+            return updateWhere<TEntity>(dbContext, keyPropertyWheres, propertyUpdates);
         }
 
         /// <summary>
@@ -488,7 +470,12 @@ namespace FCP.Data
         public IUpdateBuilder updateEntityIgnore<TEntity>(IDbContext dbContext, TEntity entity,
             params Expression<Func<TEntity, object>>[] ignorePropertyExpressions) where TEntity : class
         {
-            throw new NotImplementedException();
+            var keyPropertyWheres = getKeyPropertyValues(entity);
+
+            var updatePropertyMaps = sqlGenerator.getUpdateProperties(true, ignorePropertyExpressions);
+            var propertyUpdates = getPropertyValues(entity, updatePropertyMaps.ToArray());
+
+            return updateWhere<TEntity>(dbContext, keyPropertyWheres, propertyUpdates);
         }
 
         /// <summary>
@@ -503,7 +490,12 @@ namespace FCP.Data
         public IUpdateBuilder updateEntityByKey<TEntity>(IDbContext dbContext, object id,
             TEntity entity, params Expression<Func<TEntity, object>>[] includePropertyExpressions) where TEntity : class
         {
-            throw new NotImplementedException();
+            var keyPropertyWheres = getKeyPropertyValues<TEntity>(id);
+
+            var updatePropertyMaps = sqlGenerator.getUpdateProperties(false, includePropertyExpressions);
+            var propertyUpdates = getPropertyValues(entity, updatePropertyMaps.ToArray());
+
+            return updateWhere<TEntity>(dbContext, keyPropertyWheres, propertyUpdates);            
         }
 
         /// <summary>
@@ -518,7 +510,12 @@ namespace FCP.Data
         public IUpdateBuilder updateEntityIgnoreByKey<TEntity>(IDbContext dbContext, object id,
             TEntity entity, params Expression<Func<TEntity, object>>[] ignorePropertyExpressions) where TEntity : class
         {
-            throw new NotImplementedException();
+            var keyPropertyWheres = getKeyPropertyValues<TEntity>(id);
+
+            var updatePropertyMaps = sqlGenerator.getUpdateProperties(true, ignorePropertyExpressions);
+            var propertyUpdates = getPropertyValues(entity, updatePropertyMaps.ToArray());
+
+            return updateWhere<TEntity>(dbContext, keyPropertyWheres, propertyUpdates);
         }
 
         /// <summary>
