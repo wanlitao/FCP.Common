@@ -17,7 +17,7 @@ namespace FCP.Repository
         IDbContext dbContext { get; }
         #endregion
 
-        #region 方法
+        #region 查询
         /// <summary>
         /// 根据主键获取实体
         /// </summary>
@@ -25,24 +25,24 @@ namespace FCP.Repository
         /// <returns></returns>
         TEntity getByKey(object id);
 
-        #region 获取列表
         /// <summary>
-        /// 获取列表
+        /// 获取查询Builder
         /// </summary>
         /// <param name="ignorePropertyExpressions">忽略的属性表达式</param>
         /// <returns></returns>
-        ISelectBuilder<TEntity> getListBuilder(params Expression<Func<TEntity, object>>[] ignorePropertyExpressions);
+        ISelectBuilder<TEntity> query(params Expression<Func<TEntity, object>>[] ignorePropertyExpressions);
 
         /// <summary>
-        /// 获取列表
+        /// 获取查询Builder
         /// </summary>
         /// <param name="wherePredicate">where条件</param>
         /// <param name="ignorePropertyExpressions">忽略的属性表达式</param>
         /// <returns></returns>
-        ISelectBuilder<TEntity> getListBuilder(Expression<Func<TEntity, bool>> wherePredicate,
+        ISelectBuilder<TEntity> query(Expression<Func<TEntity, bool>> wherePredicate,
             params Expression<Func<TEntity, object>>[] ignorePropertyExpressions);
         #endregion
 
+        #region 插入
         /// <summary>
         /// 插入实体
         /// </summary>
@@ -50,30 +50,7 @@ namespace FCP.Repository
         /// <param name="ignorePropertyExpressions">忽略的属性表达式</param>
         /// <returns></returns>
         TKey insert<TKey>(TEntity entity, params Expression<Func<TEntity, object>>[] ignorePropertyExpressions);
-
-        #region 删除
-        /// <summary>
-        /// 删除指定主键的实体
-        /// </summary>
-        /// <param name="id"></param>
-        /// <returns></returns>
-        int deleteByKey(object id);
-
-        /// <summary>
-        /// 删除实体
-        /// </summary>
-        /// <param name="entity"></param>
-        /// <returns></returns>
-        int delete(TEntity entity);
-
-        /// <summary>
-        /// 按where条件删除
-        /// </summary>
-        /// <param name="entity"></param>
-        /// <param name="includePropertyExpressions">where属性表达式</param>
-        /// <returns></returns>
-        int deleteByWhere(TEntity entity, params Expression<Func<TEntity, object>>[] includePropertyExpressions);
-        #endregion 
+        #endregion
 
         #region 更新
         /// <summary>
@@ -111,6 +88,30 @@ namespace FCP.Repository
         int updateIgnoreByKey(object id, TEntity entity, params Expression<Func<TEntity, object>>[] ignorePropertyExpressions);
         #endregion
 
+        #region 删除
+        /// <summary>
+        /// 删除指定主键的实体
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        int deleteByKey(object id);
+
+        /// <summary>
+        /// 删除实体
+        /// </summary>
+        /// <param name="entity"></param>
+        /// <returns></returns>
+        int delete(TEntity entity);
+
+        /// <summary>
+        /// 按where条件删除
+        /// </summary>
+        /// <param name="entity"></param>
+        /// <param name="includePropertyExpressions">where属性表达式</param>
+        /// <returns></returns>
+        int deleteByWhere(TEntity entity, params Expression<Func<TEntity, object>>[] includePropertyExpressions);
+        #endregion 
+
         /// <summary>
         /// 首行首列查询
         /// </summary>
@@ -118,7 +119,6 @@ namespace FCP.Repository
         /// <param name="selectSql">查询字段Sql</param>
         /// <param name="wherePredicate">where条件</param>
         /// <returns></returns>
-        TResult executeScalar<TResult>(string selectSql, Expression<Func<TEntity, bool>> wherePredicate);
-        #endregion
+        TResult executeScalar<TResult>(string selectSql, Expression<Func<TEntity, bool>> wherePredicate);        
     }
 }

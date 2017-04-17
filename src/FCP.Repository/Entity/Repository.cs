@@ -38,9 +38,10 @@ namespace FCP.Repository
         /// <summary>
         /// 数据库Sql生成器
         /// </summary>
-        protected ISqlGenerator dbSqlGenerator { get { return dbContextImpl.sqlGenerator; } }        
+        protected ISqlGenerator dbSqlGenerator { get { return dbContextImpl.sqlGenerator; } }
         #endregion
 
+        #region 查询
         /// <summary>
         /// 根据主键获取实体
         /// </summary>
@@ -53,31 +54,31 @@ namespace FCP.Repository
 
             return dbContext.selectEntityByKey<TEntity>(id).QuerySingle();
         }
-
-        #region 获取列表
+                
         /// <summary>
-        /// 获取列表
+        /// 获取查询Builder
         /// </summary>
         /// <param name="ignorePropertyExpressions">忽略的属性表达式</param>
         /// <returns></returns>
-        public virtual ISelectBuilder<TEntity> getListBuilder(params Expression<Func<TEntity, object>>[] ignorePropertyExpressions)
+        public virtual ISelectBuilder<TEntity> query(params Expression<Func<TEntity, object>>[] ignorePropertyExpressions)
         {
-            return getListBuilder(null, ignorePropertyExpressions);
+            return query(null, ignorePropertyExpressions);
         }
 
         /// <summary>
-        /// 获取列表
+        /// 获取查询Builder
         /// </summary>
         /// <param name="wherePredicate">where条件</param>
         /// <param name="ignorePropertyExpressions">忽略的属性表达式</param>
         /// <returns></returns>
-        public virtual ISelectBuilder<TEntity> getListBuilder(Expression<Func<TEntity, bool>> wherePredicate,
+        public virtual ISelectBuilder<TEntity> query(Expression<Func<TEntity, bool>> wherePredicate,
             params Expression<Func<TEntity, object>>[] ignorePropertyExpressions)
         {
             return dbContext.selectEntityByWhere(wherePredicate, ignorePropertyExpressions);
         }
         #endregion
 
+        #region 插入
         /// <summary>
         /// 插入实体
         /// </summary>
@@ -90,50 +91,6 @@ namespace FCP.Repository
                 throw new ArgumentNullException(nameof(entity));
 
             return dbContext.insertEntity(entity, ignorePropertyExpressions).ExecuteReturnLastId<TKey>();
-        }
-
-        #region 删除
-        /// <summary>
-        /// 删除指定主键的实体
-        /// </summary>
-        /// <param name="id"></param>
-        /// <returns></returns>
-        public virtual int deleteByKey(object id)
-        {
-            if (id == null)
-                throw new ArgumentNullException(nameof(id));
-
-            return dbContext.deleteEntityByKey<TEntity>(id).Execute();
-        }
-
-        /// <summary>
-        /// 删除实体
-        /// </summary>
-        /// <param name="entity"></param>
-        /// <returns></returns>
-        public virtual int delete(TEntity entity)
-        {
-            if (entity == null)
-                throw new ArgumentNullException(nameof(entity));
-
-            return dbContext.deleteEntity(entity).Execute();
-        }
-
-        /// <summary>
-        /// 按where条件删除
-        /// </summary>
-        /// <param name="entity"></param>
-        /// <param name="includePropertyExpressions">where属性表达式</param>
-        /// <returns></returns>
-        public virtual int deleteByWhere(TEntity entity, params Expression<Func<TEntity, object>>[] includePropertyExpressions)
-        {
-            if (entity == null)
-                throw new ArgumentNullException(nameof(entity));
-
-            if (includePropertyExpressions.isEmpty())
-                throw new ArgumentNullException(nameof(includePropertyExpressions));
-
-            return dbContext.deleteEntityByWhere(entity, includePropertyExpressions).Execute();
         }
         #endregion
 
@@ -206,6 +163,51 @@ namespace FCP.Repository
                 throw new ArgumentNullException(nameof(entity));
 
             return dbContext.updateEntityIgnoreByKey(id, entity, ignorePropertyExpressions).Execute();
+        }
+        #endregion
+
+        #region 删除
+        /// <summary>
+        /// 删除指定主键的实体
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        public virtual int deleteByKey(object id)
+        {
+            if (id == null)
+                throw new ArgumentNullException(nameof(id));
+
+            return dbContext.deleteEntityByKey<TEntity>(id).Execute();
+        }
+
+        /// <summary>
+        /// 删除实体
+        /// </summary>
+        /// <param name="entity"></param>
+        /// <returns></returns>
+        public virtual int delete(TEntity entity)
+        {
+            if (entity == null)
+                throw new ArgumentNullException(nameof(entity));
+
+            return dbContext.deleteEntity(entity).Execute();
+        }
+
+        /// <summary>
+        /// 按where条件删除
+        /// </summary>
+        /// <param name="entity"></param>
+        /// <param name="includePropertyExpressions">where属性表达式</param>
+        /// <returns></returns>
+        public virtual int deleteByWhere(TEntity entity, params Expression<Func<TEntity, object>>[] includePropertyExpressions)
+        {
+            if (entity == null)
+                throw new ArgumentNullException(nameof(entity));
+
+            if (includePropertyExpressions.isEmpty())
+                throw new ArgumentNullException(nameof(includePropertyExpressions));
+
+            return dbContext.deleteEntityByWhere(entity, includePropertyExpressions).Execute();
         }
         #endregion
 

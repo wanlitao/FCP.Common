@@ -555,7 +555,7 @@ namespace FCP.Data
 
         #region 辅助方法
         /// <summary>
-        /// 设置UpdateBuilder的更新属性列表
+        /// 设置InsertBuilder的插入属性列表
         /// </summary>
         /// <typeparam name="TEntity"></typeparam>
         /// <param name="updateBuilder"></param>
