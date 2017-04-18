@@ -1,7 +1,10 @@
 ﻿using FCP.Core;
 using FCP.Entity;
 using FCP.Repository;
+using FCP.Util;
+using FluentData;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 
@@ -20,6 +23,51 @@ namespace FCP.Service.CRUD
 
             return entity == null ? FCPDoResultHelper.doNotFound<TEntity>($"not find the record of pkid: {id}")
                 : FCPDoResultHelper.doSuccess(entity);
+        }
+        
+        public virtual FCPDoResult<TEntity> GetSingle(Expression<Func<TEntity, bool>> wherePredicate,
+            params Expression<Func<TEntity, object>>[] ignorePropertyExpressions)
+        {
+            var selectBuilder = repository.query(wherePredicate, ignorePropertyExpressions);
+
+            var entity = selectBuilder.QuerySingle();
+
+            return entity == null ? FCPDoResultHelper.doNotFound<TEntity>("not found any record")
+                : FCPDoResultHelper.doSuccess(entity);
+        }
+        
+        public virtual FCPDoResult<IList<TEntity>> GetList(Expression<Func<TEntity, bool>> wherePredicate,
+            Action<ISelectBuilder<TEntity>> queryAction, params Expression<Func<TEntity, object>>[] ignorePropertyExpressions)
+        {
+            var selectBuilder = repository.query(wherePredicate, ignorePropertyExpressions);
+            queryAction?.Invoke(selectBuilder);
+
+            var entities = selectBuilder.QueryMany();
+
+            return entities.isEmpty() ? FCPDoResultHelper.doNotFound<IList<TEntity>>("not found any record")
+                : FCPDoResultHelper.doSuccess<IList<TEntity>>(entities);
+        }
+        
+        public virtual FCPDoResult<FCPPageData<TEntity>> GetPageList(int currentPage, int pageSize,
+            Expression<Func<TEntity, bool>> wherePredicate, Action<ISelectBuilder<TEntity>> queryAction,
+            params Expression<Func<TEntity, object>>[] ignorePropertyExpressions)
+        {
+            if (currentPage < 1)
+                throw new ArgumentOutOfRangeException(nameof(currentPage), "current page must greater than zero");
+
+            if (pageSize < 1)
+                throw new ArgumentOutOfRangeException(nameof(pageSize), "page size must greater than zero");
+
+            var pageData = new FCPPageData<TEntity>() { pageIndex = currentPage, pageSize = pageSize };
+
+            var selectBuilder = repository.query(wherePredicate, ignorePropertyExpressions);
+            queryAction?.Invoke(selectBuilder);
+
+            pageData.data = selectBuilder.Paging(currentPage, pageSize).QueryMany();
+            pageData.total = repository.executeScalar<int>("Count(*)", wherePredicate);
+
+            return pageData.data.isEmpty() ? FCPDoResultHelper.doNotFound<FCPPageData<TEntity>>("not found any record of target page")
+                : FCPDoResultHelper.doSuccess(pageData);
         }
         #endregion
 

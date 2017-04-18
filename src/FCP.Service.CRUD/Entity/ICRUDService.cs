@@ -1,5 +1,7 @@
 ﻿using FCP.Core;
+using FluentData;
 using System;
+using System.Collections.Generic;
 using System.Linq.Expressions;
 
 namespace FCP.Service.CRUD
@@ -13,6 +15,38 @@ namespace FCP.Service.CRUD
         /// <param name="id"></param>
         /// <returns></returns>
         FCPDoResult<TEntity> GetByKey(object id);
+
+        /// <summary>
+        /// 获取单个实体
+        /// </summary>
+        /// <param name="wherePredicate">where条件</param>
+        /// <param name="ignorePropertyExpressions">忽略的属性表达式</param>
+        /// <returns></returns>
+        FCPDoResult<TEntity> GetSingle(Expression<Func<TEntity, bool>> wherePredicate,
+            params Expression<Func<TEntity, object>>[] ignorePropertyExpressions);
+
+        /// <summary>
+        /// 获取列表
+        /// </summary>
+        /// <param name="wherePredicate">where条件</param>
+        /// <param name="queryAction">查询设置动作</param>
+        /// <param name="ignorePropertyExpressions">忽略的属性表达式</param>
+        /// <returns></returns>
+        FCPDoResult<IList<TEntity>> GetList(Expression<Func<TEntity, bool>> wherePredicate,
+            Action<ISelectBuilder<TEntity>> queryAction, params Expression<Func<TEntity, object>>[] ignorePropertyExpressions);
+
+        /// <summary>
+        /// 获取分页列表
+        /// </summary>
+        /// <param name="currentPage">页号</param>
+        /// <param name="pageSize">每页数量</param>
+        /// <param name="wherePredicate">where条件</param>
+        /// <param name="queryAction">查询设置动作</param>
+        /// <param name="ignorePropertyExpressions">忽略的属性表达式</param>
+        /// <returns></returns>
+        FCPDoResult<FCPPageData<TEntity>> GetPageList(int currentPage, int pageSize,
+            Expression<Func<TEntity, bool>> wherePredicate, Action<ISelectBuilder<TEntity>> queryAction,
+            params Expression<Func<TEntity, object>>[] ignorePropertyExpressions);
         #endregion
 
         #region 插入

@@ -342,7 +342,7 @@ namespace FCP.Data
         public ISelectBuilder<TEntity> selectEntityByWhere<TEntity>(IDbContext dbContext, Expression<Func<TEntity, bool>> wherePredicate,
             params Expression<Func<TEntity, object>>[] ignorePropertyExpressions) where TEntity : class
         {
-            ISelectBuilder<TEntity> entitySelectBuilder = getEntitySelectBuilder<TEntity>(dbContext, null, ignorePropertyExpressions);
+            ISelectBuilder<TEntity> entitySelectBuilder = getEntitySelectBuilder(dbContext, null, ignorePropertyExpressions);
 
             setSelectBuilderWherePredicate(entitySelectBuilder, wherePredicate);
 
