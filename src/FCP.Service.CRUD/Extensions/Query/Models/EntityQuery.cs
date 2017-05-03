@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
+using FCP.Util;
 
 namespace FCP.Service.CRUD
 {
@@ -18,12 +19,38 @@ namespace FCP.Service.CRUD
         /// <summary>
         /// where条件
         /// </summary>
-        public Expression<Func<TEntity, bool>> WherePredicate { get { return null; } }
+        public Expression<Func<TEntity, bool>> WherePredicate { get { return CombineWhereConditions(WhereConditions.ToArray()); } }
 
         /// <summary>
         /// where条件列表
         /// </summary>
         protected IList<Expression<Func<TEntity, bool>>> WhereConditions { get; set; }
+
+        /// <summary>
+        /// 组合where条件
+        /// </summary>
+        /// <param name="whereConditionArr"></param>
+        /// <returns></returns>
+        private static Expression<Func<TEntity, bool>> CombineWhereConditions(
+            params Expression<Func<TEntity, bool>>[] whereConditionArr)
+        {
+            if (whereConditionArr.isEmpty())
+                return null;
+            
+            var parameterExpr = Expression.Parameter(typeof(TEntity), "entity");
+            var replaceVisitor = new ParameterReplaceVisitor(parameterExpr);
+            Expression predicateBodyExpr = null;
+
+            foreach (var whereCondition in whereConditionArr)
+            {
+                var newConditionBodyExpr = replaceVisitor.Visit(whereCondition.Body);
+
+                predicateBodyExpr = (predicateBodyExpr == null) ? newConditionBodyExpr
+                    : Expression.AndAlso(predicateBodyExpr, newConditionBodyExpr);
+            }
+
+            return Expression.Lambda<Func<TEntity, bool>>(predicateBodyExpr, parameterExpr);
+        }
 
         /// <summary>
         /// 添加where条件
@@ -97,5 +124,23 @@ namespace FCP.Service.CRUD
             return this;
         }
         #endregion
+    }
+
+    /// <summary>
+    /// 参数替换 ExpressionVisitor
+    /// </summary>
+    internal class ParameterReplaceVisitor : ExpressionVisitor
+    {
+        private readonly ParameterExpression _newParameter;
+
+        internal ParameterReplaceVisitor(ParameterExpression newParameter)
+        {
+            _newParameter = newParameter;
+        }
+
+        protected override Expression VisitParameter(ParameterExpression node)
+        {
+            return _newParameter;
+        }
     }
 }

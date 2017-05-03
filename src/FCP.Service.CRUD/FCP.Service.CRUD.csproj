@@ -56,6 +56,10 @@
       <Project>{9DDBDAAB-7BA3-4E11-A3E5-8969421893B3}</Project>
       <Name>FCP.Core</Name>
     </ProjectReference>
+    <ProjectReference Include="..\FCP.Data\FCP.Data.csproj">
+      <Project>{71472C56-2CE3-468C-A3DF-9B1E8D520134}</Project>
+      <Name>FCP.Data</Name>
+    </ProjectReference>
     <ProjectReference Include="..\FCP.Entity\FCP.Entity.csproj">
       <Project>{72736C2D-5DBD-4E39-A239-D49D6783AAE5}</Project>
       <Name>FCP.Entity</Name>
