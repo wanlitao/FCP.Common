@@ -1,6 +1,8 @@
 ﻿using FCP.Util;
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
 
 namespace FCP.Service.CRUD
 {
@@ -14,13 +16,18 @@ namespace FCP.Service.CRUD
 
     internal class SqlBuilder
     {
-        private const string paramPrefix = "@";   //参数前缀        
-        private const string paramPlaceHolderStr = "?";  //参数 占位符
+        internal static Regex regexParams = new Regex(@"(?<!@)@\w+", RegexOptions.Compiled);       
 
         private int _paramIndex = 0;
+        private Func<string, string> _paramNameFormatFunction;
 
-        internal SqlBuilder()
+        internal SqlBuilder(Func<string, string> paramNameFormatFunc)
         {
+            if (paramNameFormatFunc == null)
+                throw new ArgumentNullException(nameof(paramNameFormatFunc));
+
+            _paramNameFormatFunction = paramNameFormatFunc;
+
             SelectColumns = new List<string>();
             FromTables = new List<string>();
             WhereConditions = new List<string>();
@@ -97,17 +104,21 @@ namespace FCP.Service.CRUD
         /// 添加where条件
         /// </summary>
         /// <param name="whereConditionStr">where条件</param>
-        /// <param name="parameterValue">参数值</param>
+        /// <param name="parameterValues">参数值</param>
         /// <returns></returns>
-        public SqlBuilder Where(string whereConditionStr, object parameterValue = null)
+        public SqlBuilder Where(string whereConditionStr, params object[] parameterValues)
         {
             if (!whereConditionStr.isNullOrEmpty())
             {
-                if (parameterValue != null)
+                if (parameterValues.isNotEmpty())
                 {
-                    Parameters.Add(parameterValue);
-                    //替换参数占位符
-                    whereConditionStr = whereConditionStr.Replace(paramPlaceHolderStr, paramPrefix + (_paramIndex++));
+                    //正则替换参数占位符
+                    whereConditionStr = regexParams.Replace(whereConditionStr, m => _paramNameFormatFunction((_paramIndex++).ToString()));
+
+                    foreach (var parameterValue in parameterValues)
+                    {
+                        Parameters.Add(parameterValue);
+                    }
                 }
 
                 WhereConditions.Add(whereConditionStr);
@@ -169,6 +180,22 @@ namespace FCP.Service.CRUD
         /// 查询参数
         /// </summary>
         protected IList<object> Parameters { get; set; }
+
+        /// <summary>
+        /// 添加参数
+        /// </summary>
+        /// <param name="parameterValue"></param>
+        /// <returns></returns>
+        public SqlBuilder Param(object parameterValue)
+        {
+            if (parameterValue != null)
+            {
+                Parameters.Add(parameterValue);
+                _paramIndex++;
+            }
+
+            return this;
+        }
         #endregion
     }
 }
