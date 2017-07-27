@@ -37,7 +37,8 @@ namespace FCP.Repository
             {
                 if (disposing)
                 {
-                    _dbContext.Dispose();
+                    _dbContext.Rollback();
+                    _dbContext.UseTransaction(false);
                 }
             }
             this.disposed = true;
