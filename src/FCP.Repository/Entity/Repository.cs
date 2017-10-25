@@ -76,6 +76,27 @@ namespace FCP.Repository
         {
             return dbContext.selectEntityByWhere(wherePredicate, ignorePropertyExpressions);
         }
+
+        /// <summary>
+        /// 获取查询Builder
+        /// </summary>
+        /// <typeparam name="TResult"></typeparam>        
+        /// <returns></returns>
+        public virtual ISelectBuilder<TResult> query<TResult>()
+        {
+            return query<TResult>(string.Empty);
+        }
+
+        /// <summary>
+        /// 获取查询Builder
+        /// </summary>
+        /// <typeparam name="TResult"></typeparam>
+        /// <param name="selectSql">查询字段Sql</param>
+        /// <returns></returns>
+        public virtual ISelectBuilder<TResult> query<TResult>(string selectSql)
+        {
+            return dbContext.Select<TResult>(selectSql);
+        }
         #endregion
 
         #region 插入

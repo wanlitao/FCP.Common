@@ -5,23 +5,15 @@ using System.Linq;
 using System.Text.RegularExpressions;
 
 namespace FCP.Service.CRUD
-{
+{    
     public class NativeQuery
-    {
-        public NativeQuery()
-        {
-
-        }
-    }
-
-    internal class SqlBuilder
     {
         internal static Regex regexParams = new Regex(@"(?<!@)@\w+", RegexOptions.Compiled);       
 
         private int _paramIndex = 0;
         private Func<string, string> _paramNameFormatFunction;
 
-        internal SqlBuilder(Func<string, string> paramNameFormatFunc)
+        internal NativeQuery(Func<string, string> paramNameFormatFunc)
         {
             if (paramNameFormatFunc == null)
                 throw new ArgumentNullException(nameof(paramNameFormatFunc));
@@ -51,7 +43,7 @@ namespace FCP.Service.CRUD
         /// </summary>
         /// <param name="column"></param>
         /// <returns></returns>
-        public SqlBuilder Select(string column)
+        public NativeQuery Select(string column)
         {
             if (!column.isNullOrEmpty())
             {
@@ -78,7 +70,7 @@ namespace FCP.Service.CRUD
         /// </summary>
         /// <param name="tableStr"></param>
         /// <returns></returns>
-        public SqlBuilder From(string tableStr)
+        public NativeQuery From(string tableStr)
         {
             if (!tableStr.isNullOrEmpty())
             {
@@ -106,7 +98,7 @@ namespace FCP.Service.CRUD
         /// <param name="whereConditionStr">where条件</param>
         /// <param name="parameterValues">参数值</param>
         /// <returns></returns>
-        public SqlBuilder Where(string whereConditionStr, params object[] parameterValues)
+        public NativeQuery Where(string whereConditionStr, params object[] parameterValues)
         {
             if (!whereConditionStr.isNullOrEmpty())
             {
@@ -144,7 +136,7 @@ namespace FCP.Service.CRUD
         /// </summary>
         /// <param name="column"></param>
         /// <returns></returns>
-        public SqlBuilder OrderByAsc(string column)
+        public NativeQuery OrderByAsc(string column)
         {
             if (!column.isNullOrEmpty())
             {
@@ -159,7 +151,7 @@ namespace FCP.Service.CRUD
         /// </summary>
         /// <param name="column"></param>
         /// <returns></returns>
-        public SqlBuilder OrderByDesc(string column)
+        public NativeQuery OrderByDesc(string column)
         {
             if (!column.isNullOrEmpty())
             {
@@ -186,7 +178,7 @@ namespace FCP.Service.CRUD
         /// </summary>
         /// <param name="parameterValue"></param>
         /// <returns></returns>
-        public SqlBuilder Param(object parameterValue)
+        public NativeQuery Param(object parameterValue)
         {
             if (parameterValue != null)
             {

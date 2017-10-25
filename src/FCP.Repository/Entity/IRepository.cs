@@ -40,6 +40,21 @@ namespace FCP.Repository
         /// <returns></returns>
         ISelectBuilder<TEntity> query(Expression<Func<TEntity, bool>> wherePredicate,
             params Expression<Func<TEntity, object>>[] ignorePropertyExpressions);
+
+        /// <summary>
+        /// 获取查询Builder
+        /// </summary>
+        /// <typeparam name="TResult"></typeparam>
+        /// <returns></returns>
+        ISelectBuilder<TResult> query<TResult>();
+
+        /// <summary>
+        /// 获取查询Builder
+        /// </summary>
+        /// <typeparam name="TResult"></typeparam>
+        /// <param name="selectSql">查询字段Sql</param>
+        /// <returns></returns>
+        ISelectBuilder<TResult> query<TResult>(string selectSql);
         #endregion
 
         #region 插入
@@ -119,6 +134,6 @@ namespace FCP.Repository
         /// <param name="selectSql">查询字段Sql</param>
         /// <param name="wherePredicate">where条件</param>
         /// <returns></returns>
-        TResult executeScalar<TResult>(string selectSql, Expression<Func<TEntity, bool>> wherePredicate);        
+        TResult executeScalar<TResult>(string selectSql, Expression<Func<TEntity, bool>> wherePredicate);
     }
 }

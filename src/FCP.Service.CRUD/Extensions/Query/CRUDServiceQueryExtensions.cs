@@ -15,6 +15,7 @@ namespace FCP.Service.CRUD
     /// </summary>
     public static class CRUDServiceQueryExtensions
     {
+        #region EntityQuery
         /// <summary>
         /// 获取单个实体
         /// </summary>
@@ -88,5 +89,10 @@ namespace FCP.Service.CRUD
                 selectBuilder.OrderBy(string.Join(",", orderByColumnSqls));
             };
         }
+        #endregion
+
+        #region NativeQuery
+
+        #endregion
     }
 }
