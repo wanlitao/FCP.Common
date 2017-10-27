@@ -50,6 +50,7 @@
     <Compile Include="Extensions\Query\Models\EntityQuery.cs" />
     <Compile Include="Extensions\Query\Models\NativeQuery.cs" />
     <Compile Include="Extensions\Query\Models\OrderByType.cs" />
+    <Compile Include="Extensions\Query\SelectBuilderExtensions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -58,11 +59,11 @@
       <Name>FCP.Core</Name>
     </ProjectReference>
     <ProjectReference Include="..\FCP.Data\FCP.Data.csproj">
-      <Project>{71472C56-2CE3-468C-A3DF-9B1E8D520134}</Project>
+      <Project>{71472c56-2ce3-468c-a3df-9b1e8d520134}</Project>
       <Name>FCP.Data</Name>
     </ProjectReference>
     <ProjectReference Include="..\FCP.Entity\FCP.Entity.csproj">
-      <Project>{72736C2D-5DBD-4E39-A239-D49D6783AAE5}</Project>
+      <Project>{72736c2d-5dbd-4e39-a239-d49d6783aae5}</Project>
       <Name>FCP.Entity</Name>
     </ProjectReference>
     <ProjectReference Include="..\FCP.Repository\FCP.Repository.csproj">

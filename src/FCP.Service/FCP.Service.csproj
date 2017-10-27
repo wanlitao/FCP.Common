@@ -30,9 +30,8 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="FCP.FluentData, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\FCP.FluentData.1.0.0.0\lib\net40\FCP.FluentData.dll</HintPath>
-      <Private>True</Private>
+    <Reference Include="FCP.FluentData, Version=1.0.1.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\FCP.FluentData.1.0.1\lib\net40\FCP.FluentData.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />

@@ -1,28 +1,17 @@
 ﻿using FCP.Util;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text.RegularExpressions;
 
 namespace FCP.Service.CRUD
-{    
+{
     public class NativeQuery
     {
-        internal static Regex regexParams = new Regex(@"(?<!@)@\w+", RegexOptions.Compiled);       
-
-        private int _paramIndex = 0;
-        private Func<string, string> _paramNameFormatFunction;
-
-        internal NativeQuery(Func<string, string> paramNameFormatFunc)
+        public NativeQuery()
         {
-            if (paramNameFormatFunc == null)
-                throw new ArgumentNullException(nameof(paramNameFormatFunc));
-
-            _paramNameFormatFunction = paramNameFormatFunc;
-
             SelectColumns = new List<string>();
             FromTables = new List<string>();
             WhereConditions = new List<string>();
+            GroupByColumns = new List<string>();
             OrderByColumns = new Dictionary<string, OrderByType>();
             Parameters = new List<object>();
         }
@@ -34,7 +23,7 @@ namespace FCP.Service.CRUD
         public string SelectSqlStr { get { return string.Join(",", SelectColumns); } }
 
         /// <summary>
-        /// select语句
+        /// 查询字段列表
         /// </summary>
         protected IList<string> SelectColumns { get; set; }
 
@@ -58,7 +47,7 @@ namespace FCP.Service.CRUD
         /// <summary>
         /// from语句
         /// </summary>
-        public string FromSqlStr { get { return string.Join(" ", FromTables); } }
+        public string FromSqlStr { get { return string.Join(",", FromTables); } }
 
         /// <summary>
         /// from table列表
@@ -104,9 +93,6 @@ namespace FCP.Service.CRUD
             {
                 if (parameterValues.isNotEmpty())
                 {
-                    //正则替换参数占位符
-                    whereConditionStr = regexParams.Replace(whereConditionStr, m => _paramNameFormatFunction((_paramIndex++).ToString()));
-
                     foreach (var parameterValue in parameterValues)
                     {
                         Parameters.Add(parameterValue);
@@ -114,6 +100,33 @@ namespace FCP.Service.CRUD
                 }
 
                 WhereConditions.Add(whereConditionStr);
+            }
+
+            return this;
+        }
+        #endregion
+
+        #region 分组字段
+        /// <summary>
+        /// groupby分组语句
+        /// </summary>
+        public string GroupBySqlStr { get { return string.Join(",", GroupByColumns); } }
+
+        /// <summary>
+        /// 分组字段列表
+        /// </summary>
+        protected IList<string> GroupByColumns { get; set; }
+
+        /// <summary>
+        /// 添加分组字段
+        /// </summary>
+        /// <param name="column"></param>
+        /// <returns></returns>
+        public NativeQuery GroupBy(string column)
+        {
+            if (!column.isNullOrEmpty())
+            {
+                GroupByColumns.Add(column);
             }
 
             return this;
@@ -183,7 +196,6 @@ namespace FCP.Service.CRUD
             if (parameterValue != null)
             {
                 Parameters.Add(parameterValue);
-                _paramIndex++;
             }
 
             return this;

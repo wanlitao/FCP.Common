@@ -62,7 +62,7 @@ namespace FCP.Data
             var keyPropertyMaps = sqlGenerator.getKeyProperties<TEntity>();
 
             IDictionary<string, object> keyValues = null;
-            bool isSimpleType = ReflectionHelper.isSimpleType(id.GetType());
+            bool isSimpleType = Entity.ReflectionHelper.isSimpleType(id.GetType());
             if (!isSimpleType)
             {
                 keyValues = id.toDictionaryByDynamicEmit(); //复杂类型时转换成字典
@@ -101,7 +101,7 @@ namespace FCP.Data
             var keyPropertyMaps = sqlGenerator.getKeyProperties<TEntity>();
 
             IDictionary<string, object> keyValues = null;
-            bool isSimpleType = ReflectionHelper.isSimpleType(id.GetType());
+            bool isSimpleType = Entity.ReflectionHelper.isSimpleType(id.GetType());
             if (!isSimpleType)
             {
                 keyValues = id.toDictionaryByDynamicEmit(); //复杂类型时转换成字典
@@ -151,7 +151,7 @@ namespace FCP.Data
             {
                 foreach(var propertyMap in propertyMaps.Where(m => m != null))
                 {
-                    var propertyValue = ReflectionHelper.getPropertyValue(entity, propertyMap.propertyInfo);
+                    var propertyValue = Entity.ReflectionHelper.getPropertyValue(entity, propertyMap.propertyInfo);
                     propertyValueDic.Add(propertyMap, propertyValue);
                 }
             }
@@ -570,7 +570,7 @@ namespace FCP.Data
             {
                 foreach (var insertPropertyMap in insertPropertyMaps)
                 {
-                    var insertPropertyValue = ReflectionHelper.getPropertyValue(entity, insertPropertyMap.propertyInfo);
+                    var insertPropertyValue = Entity.ReflectionHelper.getPropertyValue(entity, insertPropertyMap.propertyInfo);
                     insertBuilder.Column(insertPropertyMap.columnName, insertPropertyValue);
                 }
             }

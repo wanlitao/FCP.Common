@@ -332,7 +332,7 @@ namespace FCP.Data
             if (propertyExpression == null)
                 return string.Empty;
 
-            return ReflectionHelper.parsePropertyName(propertyExpression);            
+            return Entity.ReflectionHelper.parsePropertyName(propertyExpression);            
         }
 
         /// <summary>

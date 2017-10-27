@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Text.RegularExpressions;
 
 namespace FCP.Service.CRUD
 {
@@ -92,6 +93,128 @@ namespace FCP.Service.CRUD
         #endregion
 
         #region NativeQuery
+        /// <summary>
+        /// 获取单个实体
+        /// </summary>
+        /// <param name="queryInfo">查询条件</param>
+        /// <returns></returns>
+        public static FCPDoResult<TResult> GetSingle<TEntity, TResult>(this ICRUDService<TEntity> service,
+            NativeQuery queryInfo) where TEntity : class
+        {
+            if (queryInfo == null)
+                throw new ArgumentNullException(nameof(queryInfo));
+
+            var selectBuilder = BuildNativeQuerySelectBuilder<TEntity, TResult>(service, queryInfo);
+
+            return selectBuilder.GetSingle();
+        }
+
+        /// <summary>
+        /// 获取列表
+        /// </summary>
+        /// <param name="queryInfo">查询条件</param>
+        /// <returns></returns>
+        public static FCPDoResult<IList<TResult>> GetList<TEntity, TResult>(this ICRUDService<TEntity> service,
+            NativeQuery queryInfo) where TEntity : class
+        {
+            if (queryInfo == null)
+                throw new ArgumentNullException(nameof(queryInfo));
+
+            var selectBuilder = BuildNativeQuerySelectBuilder<TEntity, TResult>(service, queryInfo);
+
+            return selectBuilder.GetList();
+        }
+
+        /// <summary>
+        /// 获取分页列表
+        /// </summary>
+        /// <param name="queryInfo">查询条件</param>
+        /// <returns></returns>
+        public static FCPDoResult<FCPPageData<TResult>> GetPageList<TEntity, TResult>(this ICRUDService<TEntity> service,
+            int currentPage, int pageSize, NativeQuery queryInfo)
+            where TEntity : class
+            where TResult : class
+        {
+            if (queryInfo == null)
+                throw new ArgumentNullException(nameof(queryInfo));
+
+            var selectBuilder = BuildNativeQuerySelectBuilder<TEntity, TResult>(service, queryInfo);
+
+            return selectBuilder.GetPageList(currentPage, pageSize);
+        }
+
+        #region Helper Functions
+        /// <summary>
+        /// 构造Native查询SelectBuilder
+        /// </summary>
+        /// <typeparam name="TEntity"></typeparam>
+        /// <typeparam name="TResult"></typeparam>
+        /// <param name="service"></param>
+        /// <param name="queryInfo"></param>
+        /// <returns></returns>
+        private static ISelectBuilder<TResult> BuildNativeQuerySelectBuilder<TEntity, TResult>(ICRUDService<TEntity> service,
+            NativeQuery queryInfo) where TEntity : class
+        {
+            var selectBuilder = service.repository.query<TResult>();
+
+            var newParameters = new List<object>();
+            var whereSql = queryInfo.WhereSqlStr;
+            var dbProvider = service.repository.dbContext.Data.FluentDataProvider;
+            whereSql = processParams(whereSql, queryInfo.ParameterArr, dbProvider, newParameters);
+
+            return selectBuilder.Select(queryInfo.SelectSqlStr)
+                                .From(queryInfo.FromSqlStr)
+                                .Where(whereSql)
+                                .GroupBy(queryInfo.GroupBySqlStr)
+                                .OrderBy(queryInfo.OrderBySqlStr)
+                                .Parameters(newParameters.ToArray());
+        }
+
+        // Helper to handle named parameters from object properties
+        private static string processParams(string sql, object[] args_src, IDbProvider dbProvider, List<object> args_dest)
+        {
+            return rxParams.Replace(sql, m =>
+            {
+                string param = m.Value.Substring(1);
+
+                object arg_val;
+
+                int paramIndex;
+                if (int.TryParse(param, out paramIndex))
+                {
+                    // Numbered parameter
+                    if (paramIndex < 0 || paramIndex >= args_src.Length)
+                        throw new ArgumentOutOfRangeException(string.Format("Parameter '@{0}' specified but only {1} parameters supplied (in `{2}`)", paramIndex, args_src.Length, sql));
+                    arg_val = args_src[paramIndex];
+                }
+                else
+                {
+                    // Look for a property on one of the arguments with this name
+                    bool found = false;
+                    arg_val = null;
+                    foreach (var o in args_src)
+                    {
+                        var pi = o.GetType().GetProperty(param);
+                        if (pi != null)
+                        {
+                            arg_val = pi.GetValue(o, null);
+                            found = true;
+                            break;
+                        }
+                    }
+
+                    if (!found)
+                        throw new ArgumentException(string.Format("Parameter '@{0}' specified but none of the passed arguments have a property with this name (in '{1}')", param, sql));
+                }
+                
+                args_dest.Add(arg_val);
+                return dbProvider.GetParameterName((args_dest.Count - 1).ToString());
+            }
+            );
+        }
+
+        private static Regex rxParams = new Regex(@"(?<!@)@\w+", RegexOptions.Compiled);
+        #endregion;
 
         #endregion
     }
