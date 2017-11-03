@@ -43,6 +43,11 @@ namespace FCP.Entity
         public bool isReadOnly { get; private set; }
 
         /// <summary>
+        /// Gets the delete flag status of the current property
+        /// </summary>
+        public bool isDeleteFlag { get; private set; }
+
+        /// <summary>
         /// Gets the property info for the current property.
         /// </summary>
         public PropertyInfo propertyInfo { get; private set; }
@@ -73,6 +78,11 @@ namespace FCP.Entity
                 throw new ArgumentException(string.Format("'{0}' is readonly and cannot be made a key field. ", name));
             }
 
+            if (isDeleteFlag)
+            {
+                throw new ArgumentException(string.Format("'{0}' is delete flag and cannot be made a key field. ", name));
+            }
+
             this.keyType = keyType;
             return this;
         }
@@ -101,8 +111,33 @@ namespace FCP.Entity
                 throw new ArgumentException(string.Format("'{0}' is a key field and cannot be marked readonly.", name));
             }
 
+            if (isDeleteFlag)
+            {
+                throw new ArgumentException(string.Format("'{0}' is a delete flag field and cannot be marked readonly.", name));
+            }
+
             isReadOnly = true;
             return this;
+        }
+
+        /// <summary>
+        /// Fluently sets the delete flag status of the property
+        /// </summary>
+        /// <returns></returns>
+        public PropertyMap deleteFlag()
+        {
+            if (keyType != KeyType.notAKey)
+            {
+                throw new ArgumentException(string.Format("'{0}' is a key field and cannot be marked delete flag.", name));
+            }
+
+            if (isReadOnly)
+            {
+                throw new ArgumentException(string.Format("'{0}' is a readonly field and cannot be marked delete flag.", name));
+            }
+
+            isDeleteFlag = true;
+            return ignore();
         }
     }
 }
