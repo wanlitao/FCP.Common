@@ -14,6 +14,15 @@ namespace FCP.Entity
         /// 是否只读(update排除字段)
         /// </summary>
         bool isReadOnly { get; }
+        /// <summary>
+        /// 是否删除标识
+        /// </summary>
+        bool isDeleteFlag { get; }
+        /// <summary>
+        /// 删除标识True值
+        /// </summary>
+        object deleteFlagTrueValue { get; }
+
         KeyType keyType { get; }
         PropertyInfo propertyInfo { get; }
     }

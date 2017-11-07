@@ -48,6 +48,11 @@ namespace FCP.Entity
         public bool isDeleteFlag { get; private set; }
 
         /// <summary>
+        /// Gets the true value of the delete flag
+        /// </summary>
+        public object deleteFlagTrueValue { get; private set; }
+
+        /// <summary>
         /// Gets the property info for the current property.
         /// </summary>
         public PropertyInfo propertyInfo { get; private set; }
@@ -124,7 +129,7 @@ namespace FCP.Entity
         /// Fluently sets the delete flag status of the property
         /// </summary>
         /// <returns></returns>
-        public PropertyMap deleteFlag()
+        public PropertyMap deleteFlag(object trueValue)
         {
             if (keyType != KeyType.notAKey)
             {
@@ -136,7 +141,13 @@ namespace FCP.Entity
                 throw new ArgumentException(string.Format("'{0}' is a readonly field and cannot be marked delete flag.", name));
             }
 
+            if (trueValue == null)
+            {
+                throw new ArgumentNullException(nameof(trueValue), string.Format("'{0}' field should provide true value to be marked delete flag", name));
+            }
+
             isDeleteFlag = true;
+            deleteFlagTrueValue = trueValue;
             return ignore();
         }
     }
