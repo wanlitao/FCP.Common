@@ -67,15 +67,7 @@ namespace FCP.Data
         /// </summary>
         /// <param name="ignorePropertyExpressions">忽略的属性表达式</param>
         /// <returns></returns>
-        string getEntitySelectSql<TEntity>(params Expression<Func<TEntity, object>>[] ignorePropertyExpressions) where TEntity : class;
-
-        /// <summary>
-        /// 获取where条件Sql
-        /// </summary>
-        /// <typeparam name="TEntity"></typeparam>
-        /// <param name="propertyWheres">where条件</param>
-        /// <returns></returns>
-        string getEntityWhereSql<TEntity>(params KeyValuePair<Expression<Func<TEntity, object>>, object>[] propertyWheres) where TEntity : class;
+        string getEntitySelectSql<TEntity>(params Expression<Func<TEntity, object>>[] ignorePropertyExpressions) where TEntity : class;        
         #endregion
 
         #region select查询

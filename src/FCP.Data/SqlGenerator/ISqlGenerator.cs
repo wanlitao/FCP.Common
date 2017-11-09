@@ -57,6 +57,13 @@ namespace FCP.Data
         IEnumerable<IPropertyMap> getKeyProperties<TEntity>() where TEntity : class;
 
         /// <summary>
+        /// 获取删除标识属性
+        /// </summary>
+        /// <typeparam name="TEntity"></typeparam>
+        /// <returns></returns>
+        IPropertyMap getDeleteFlagProperty<TEntity>() where TEntity : class;
+
+        /// <summary>
         /// 获取属性
         /// </summary>
         /// <typeparam name="TEntity"></typeparam>

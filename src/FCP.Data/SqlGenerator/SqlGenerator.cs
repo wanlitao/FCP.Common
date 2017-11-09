@@ -190,6 +190,18 @@ namespace FCP.Data
         }
 
         /// <summary>
+        /// 获取删除标识属性
+        /// </summary>
+        /// <typeparam name="TEntity"></typeparam>
+        /// <returns></returns>
+        public IPropertyMap getDeleteFlagProperty<TEntity>() where TEntity : class
+        {
+            IClassMapper entityMapper = entityConfiguration.getClassMapper<TEntity>();
+
+            return entityMapper.properties.Where(p => p.isDeleteFlag).SingleOrDefault();
+        }
+
+        /// <summary>
         /// 获取属性
         /// </summary>
         /// <typeparam name="TEntity"></typeparam>

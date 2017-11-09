@@ -15,6 +15,7 @@ namespace FCP.Data
     /// </summary>
     public class DbContextImplementor : IDbContextImplementor
     {
+        private const string deleteFlagValueParameterName = "pDeleteFlag";  //删除标识值对应参数名
         private static ExprQueryTranslatorFactory exprQueryTranslatorFactory = new ExprQueryTranslatorFactory();
 
         public DbContextImplementor(IEntityConfiguration configuration, IDbProvider fluentDbProvider)
@@ -228,28 +229,7 @@ namespace FCP.Data
             var selectPropertyMaps = sqlGenerator.getSelectProperties(ignorePropertyExpressions);
 
             return string.Join(",", selectPropertyMaps.Select(p => sqlGenerator.getColumnName<TEntity>(p, false, true)));
-        }
-
-        /// <summary>
-        /// 获取where条件Sql
-        /// </summary>
-        /// <typeparam name="TEntity"></typeparam>
-        /// <param name="propertyWheres">where条件</param>
-        /// <returns></returns>
-        public string getEntityWhereSql<TEntity>(
-            params KeyValuePair<Expression<Func<TEntity, object>>, object>[] propertyWheres) where TEntity : class
-        {
-            if (propertyWheres.isEmpty())
-                return string.Empty;
-
-            var propertyMapWheres = propertyWheres.Select(m =>
-                new KeyValuePair<IPropertyMap, object>(sqlGenerator.getProperty(m.Key), m.Value));
-
-            var columnWhereSqlStrs = propertyMapWheres.Select(m =>
-                string.Format("{0} = '{1}'", sqlGenerator.getColumnName<TEntity>(m.Key, false, false), TypeHelper.parseString(m.Value)));
-
-            return string.Join(" and ", columnWhereSqlStrs);
-        }
+        }        
         #endregion
 
         #region select查询
@@ -311,6 +291,28 @@ namespace FCP.Data
                     selectBuilder.Parameter(parameter.Name, parameter.Value, DataTypes.Object,
                         ParameterDirection.Input, parameter.QueryType.Length);
                 }
+            }
+
+            //设置 删除标识 where条件
+            checkSetSelectBuilderDeleteFlagWhere<TEntity, TResult>(selectBuilder);
+        }
+
+        /// <summary>
+        /// 设置SelectBuilder 删除标识where条件
+        /// </summary>
+        /// <typeparam name="TEntity"></typeparam>
+        /// <typeparam name="TResult"></typeparam>
+        /// <param name="selectBuilder"></param>
+        protected void checkSetSelectBuilderDeleteFlagWhere<TEntity, TResult>(ISelectBuilder<TResult> selectBuilder) where TEntity : class
+        {
+            var deleteFlagProperty = sqlGenerator.getDeleteFlagProperty<TEntity>();
+            if (deleteFlagProperty != null)
+            {
+                var deleteFlagTrueParameterName = sqlGenerator.dbProvider.GetParameterName(deleteFlagValueParameterName);
+
+                selectBuilder.AndWhere(string.Format("{0} <> {1}",
+                    sqlGenerator.getColumnName<TEntity>(deleteFlagProperty, false, false), deleteFlagTrueParameterName));
+                selectBuilder.Parameter(deleteFlagTrueParameterName, deleteFlagProperty.deleteFlagTrueValue);
             }
         }
         #endregion
