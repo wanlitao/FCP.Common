@@ -179,7 +179,7 @@ namespace FCP.Data
         /// <param name="dbContext"></param>
         /// <param name="id">主键值</param>
         /// <returns></returns>
-        public static IDeleteBuilder deleteEntityByKey<TEntity>(this IDbContext dbContext, object id) where TEntity : class
+        public static IExecute deleteEntityByKey<TEntity>(this IDbContext dbContext, object id) where TEntity : class
         {
             IDbContextImplementor dbContextImpl = dbContext.dbContextImpl();
             return dbContextImpl.deleteEntityByKey<TEntity>(dbContext, id);
@@ -192,7 +192,7 @@ namespace FCP.Data
         /// <param name="dbContext"></param>
         /// <param name="entity">实体</param>
         /// <returns></returns>
-        public static IDeleteBuilder deleteEntity<TEntity>(this IDbContext dbContext, TEntity entity) where TEntity : class
+        public static IExecute deleteEntity<TEntity>(this IDbContext dbContext, TEntity entity) where TEntity : class
         {
             IDbContextImplementor dbContextImpl = dbContext.dbContextImpl();
             return dbContextImpl.deleteEntity(dbContext, entity);
@@ -206,7 +206,7 @@ namespace FCP.Data
         /// <param name="entity">实体</param>
         /// <param name="includePropertyExpressions">where属性表达式</param>
         /// <returns></returns>
-        public static IDeleteBuilder deleteEntityByWhere<TEntity>(this IDbContext dbContext, TEntity entity,
+        public static IExecute deleteEntityByWhere<TEntity>(this IDbContext dbContext, TEntity entity,
             params Expression<Func<TEntity, object>>[] includePropertyExpressions) where TEntity : class
         {
             IDbContextImplementor dbContextImpl = dbContext.dbContextImpl();
@@ -223,7 +223,7 @@ namespace FCP.Data
         /// <param name="entity">实体</param>
         /// <param name="includePropertyExpressions">更新的属性表达式</param>
         /// <returns></returns>
-        public static IUpdateBuilder updateEntity<TEntity>(this IDbContext dbContext, TEntity entity,
+        public static IExecute updateEntity<TEntity>(this IDbContext dbContext, TEntity entity,
             params Expression<Func<TEntity, object>>[] includePropertyExpressions) where TEntity : class
         {
             IDbContextImplementor dbContextImpl = dbContext.dbContextImpl();
@@ -238,7 +238,7 @@ namespace FCP.Data
         /// <param name="entity">实体</param>
         /// <param name="ignorePropertyExpressions">忽略的属性表达式</param>
         /// <returns></returns>
-        public static IUpdateBuilder updateEntityIgnore<TEntity>(this IDbContext dbContext, TEntity entity,
+        public static IExecute updateEntityIgnore<TEntity>(this IDbContext dbContext, TEntity entity,
             params Expression<Func<TEntity, object>>[] ignorePropertyExpressions) where TEntity : class
         {
             IDbContextImplementor dbContextImpl = dbContext.dbContextImpl();
@@ -254,7 +254,7 @@ namespace FCP.Data
         /// <param name="entity">实体</param>
         /// <param name="includePropertyExpressions">更新的属性表达式</param>
         /// <returns></returns>
-        public static IUpdateBuilder updateEntityByKey<TEntity>(this IDbContext dbContext, object id,
+        public static IExecute updateEntityByKey<TEntity>(this IDbContext dbContext, object id,
             TEntity entity, params Expression<Func<TEntity, object>>[] includePropertyExpressions) where TEntity : class
         {
             IDbContextImplementor dbContextImpl = dbContext.dbContextImpl();
@@ -270,7 +270,7 @@ namespace FCP.Data
         /// <param name="entity">实体</param>
         /// <param name="ignorePropertyExpressions">忽略的属性表达式</param>
         /// <returns></returns>
-        public static IUpdateBuilder updateEntityIgnoreByKey<TEntity>(this IDbContext dbContext, object id,
+        public static IExecute updateEntityIgnoreByKey<TEntity>(this IDbContext dbContext, object id,
             TEntity entity, params Expression<Func<TEntity, object>>[] ignorePropertyExpressions) where TEntity : class
         {
             IDbContextImplementor dbContextImpl = dbContext.dbContextImpl();

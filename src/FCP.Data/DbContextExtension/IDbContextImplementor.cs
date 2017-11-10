@@ -103,7 +103,7 @@ namespace FCP.Data
         /// <param name="wherePredicate">where条件</param>
         /// <returns></returns>
         ISelectBuilder<TResult> selectByWhere<TEntity, TResult>(IDbContext dbContext, string selectSql,
-            Expression<Func<TEntity, bool>> wherePredicate) where TEntity : class;        
+            Expression<Func<TEntity, bool>> wherePredicate) where TEntity : class;
         #endregion
 
         #region delete删除
@@ -114,7 +114,7 @@ namespace FCP.Data
         /// <param name="dbContext"></param>
         /// <param name="id">主键值</param>
         /// <returns></returns>
-        IDeleteBuilder deleteEntityByKey<TEntity>(IDbContext dbContext, object id) where TEntity : class;
+        IExecute deleteEntityByKey<TEntity>(IDbContext dbContext, object id) where TEntity : class;
 
         /// <summary>
         /// 按实体主键删除
@@ -123,7 +123,7 @@ namespace FCP.Data
         /// <param name="dbContext"></param>
         /// <param name="entity">实体</param>
         /// <returns></returns>
-        IDeleteBuilder deleteEntity<TEntity>(IDbContext dbContext, TEntity entity) where TEntity : class;
+        IExecute deleteEntity<TEntity>(IDbContext dbContext, TEntity entity) where TEntity : class;
 
         /// <summary>
         /// 按where条件删除
@@ -133,7 +133,7 @@ namespace FCP.Data
         /// <param name="entity">实体</param>
         /// <param name="includePropertyExpressions">where属性表达式</param>
         /// <returns></returns>
-        IDeleteBuilder deleteEntityByWhere<TEntity>(IDbContext dbContext, TEntity entity,
+        IExecute deleteEntityByWhere<TEntity>(IDbContext dbContext, TEntity entity,
             params Expression<Func<TEntity, object>>[] includePropertyExpressions) where TEntity : class;
         #endregion
 
@@ -146,7 +146,7 @@ namespace FCP.Data
         /// <param name="entity">实体</param>
         /// <param name="includePropertyExpressions">更新的属性表达式</param>
         /// <returns></returns>
-        IUpdateBuilder updateEntity<TEntity>(IDbContext dbContext, TEntity entity,
+        IExecute updateEntity<TEntity>(IDbContext dbContext, TEntity entity,
             params Expression<Func<TEntity, object>>[] includePropertyExpressions) where TEntity : class;
 
         /// <summary>
@@ -157,7 +157,7 @@ namespace FCP.Data
         /// <param name="entity">实体</param>
         /// <param name="ignorePropertyExpressions">忽略的属性表达式</param>
         /// <returns></returns>
-        IUpdateBuilder updateEntityIgnore<TEntity>(IDbContext dbContext, TEntity entity,
+        IExecute updateEntityIgnore<TEntity>(IDbContext dbContext, TEntity entity,
             params Expression<Func<TEntity, object>>[] ignorePropertyExpressions) where TEntity : class;
 
         /// <summary>
@@ -169,7 +169,7 @@ namespace FCP.Data
         /// <param name="entity">实体</param>
         /// <param name="includePropertyExpressions">更新的属性表达式</param>
         /// <returns></returns>
-        IUpdateBuilder updateEntityByKey<TEntity>(IDbContext dbContext, object id,
+        IExecute updateEntityByKey<TEntity>(IDbContext dbContext, object id,
             TEntity entity, params Expression<Func<TEntity, object>>[] includePropertyExpressions) where TEntity : class;
 
         /// <summary>
@@ -181,7 +181,7 @@ namespace FCP.Data
         /// <param name="entity">实体</param>
         /// <param name="ignorePropertyExpressions">忽略的属性表达式</param>
         /// <returns></returns>
-        IUpdateBuilder updateEntityIgnoreByKey<TEntity>(IDbContext dbContext, object id,
+        IExecute updateEntityIgnoreByKey<TEntity>(IDbContext dbContext, object id,
             TEntity entity, params Expression<Func<TEntity, object>>[] ignorePropertyExpressions) where TEntity : class;        
         #endregion
 

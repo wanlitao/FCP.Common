@@ -379,7 +379,7 @@ namespace FCP.Data
         /// <param name="dbContext"></param>
         /// <param name="id">主键值</param>
         /// <returns></returns>
-        public IDeleteBuilder deleteEntityByKey<TEntity>(IDbContext dbContext, object id) where TEntity : class
+        public IExecute deleteEntityByKey<TEntity>(IDbContext dbContext, object id) where TEntity : class
         {
             var keyPropertyWheres = getKeyPropertyValues<TEntity>(id);
 
@@ -393,7 +393,7 @@ namespace FCP.Data
         /// <param name="dbContext"></param>
         /// <param name="entity">实体</param>
         /// <returns></returns>
-        public IDeleteBuilder deleteEntity<TEntity>(IDbContext dbContext, TEntity entity) where TEntity : class
+        public IExecute deleteEntity<TEntity>(IDbContext dbContext, TEntity entity) where TEntity : class
         {
             var keyPropertyWheres = getKeyPropertyValues(entity);
 
@@ -408,7 +408,7 @@ namespace FCP.Data
         /// <param name="entity">实体</param>
         /// <param name="includePropertyExpressions">where属性表达式</param>
         /// <returns></returns>
-        public IDeleteBuilder deleteEntityByWhere<TEntity>(IDbContext dbContext, TEntity entity,
+        public IExecute deleteEntityByWhere<TEntity>(IDbContext dbContext, TEntity entity,
             params Expression<Func<TEntity, object>>[] includePropertyExpressions) where TEntity : class
         {
             var propertyMaps = sqlGenerator.getProperties(includePropertyExpressions);
@@ -424,9 +424,16 @@ namespace FCP.Data
         /// <param name="dbContext"></param>
         /// <param name="propertyWheres">where条件</param>
         /// <returns></returns>
-        protected IDeleteBuilder deleteWhere<TEntity>(IDbContext dbContext,
+        protected IExecute deleteWhere<TEntity>(IDbContext dbContext,
             params KeyValuePair<IPropertyMap, object>[] propertyWheres) where TEntity : class
         {
+            var deleteFlagProperty = sqlGenerator.getDeleteFlagProperty<TEntity>();
+            if (deleteFlagProperty != null)  //直接更新 删除标识为True
+            {
+                return updateWhere<TEntity>(dbContext, propertyWheres,
+                    new KeyValuePair<IPropertyMap, object>(deleteFlagProperty, deleteFlagProperty.deleteFlagTrueValue));
+            }
+
             IDeleteBuilder deleteBuilder = dbContext.Delete(sqlGenerator.getTableName<TEntity>(null));
 
             if (propertyWheres.isNotEmpty())
@@ -450,7 +457,7 @@ namespace FCP.Data
         /// <param name="entity">实体</param>
         /// <param name="includePropertyExpressions">更新的属性表达式</param>
         /// <returns></returns>
-        public IUpdateBuilder updateEntity<TEntity>(IDbContext dbContext, TEntity entity,
+        public IExecute updateEntity<TEntity>(IDbContext dbContext, TEntity entity,
             params Expression<Func<TEntity, object>>[] includePropertyExpressions) where TEntity : class
         {
             var keyPropertyWheres = getKeyPropertyValues(entity);
@@ -469,7 +476,7 @@ namespace FCP.Data
         /// <param name="entity">实体</param>
         /// <param name="ignorePropertyExpressions">忽略的属性表达式</param>
         /// <returns></returns>
-        public IUpdateBuilder updateEntityIgnore<TEntity>(IDbContext dbContext, TEntity entity,
+        public IExecute updateEntityIgnore<TEntity>(IDbContext dbContext, TEntity entity,
             params Expression<Func<TEntity, object>>[] ignorePropertyExpressions) where TEntity : class
         {
             var keyPropertyWheres = getKeyPropertyValues(entity);
@@ -489,7 +496,7 @@ namespace FCP.Data
         /// <param name="entity">实体</param>
         /// <param name="includePropertyExpressions">更新的属性表达式</param>
         /// <returns></returns>
-        public IUpdateBuilder updateEntityByKey<TEntity>(IDbContext dbContext, object id,
+        public IExecute updateEntityByKey<TEntity>(IDbContext dbContext, object id,
             TEntity entity, params Expression<Func<TEntity, object>>[] includePropertyExpressions) where TEntity : class
         {
             var keyPropertyWheres = getKeyPropertyValues<TEntity>(id);
@@ -509,7 +516,7 @@ namespace FCP.Data
         /// <param name="entity">实体</param>
         /// <param name="ignorePropertyExpressions">忽略的属性表达式</param>
         /// <returns></returns>
-        public IUpdateBuilder updateEntityIgnoreByKey<TEntity>(IDbContext dbContext, object id,
+        public IExecute updateEntityIgnoreByKey<TEntity>(IDbContext dbContext, object id,
             TEntity entity, params Expression<Func<TEntity, object>>[] ignorePropertyExpressions) where TEntity : class
         {
             var keyPropertyWheres = getKeyPropertyValues<TEntity>(id);
@@ -528,7 +535,7 @@ namespace FCP.Data
         /// <param name="propertyWheres">where条件</param>
         /// <param name="propertyUpdates">更新字段值</param>
         /// <returns></returns>
-        protected IUpdateBuilder updateWhere<TEntity>(IDbContext dbContext, KeyValuePair<IPropertyMap, object>[] propertyWheres,
+        protected IExecute updateWhere<TEntity>(IDbContext dbContext, KeyValuePair<IPropertyMap, object>[] propertyWheres,
             params KeyValuePair<IPropertyMap, object>[] propertyUpdates) where TEntity : class
         {
             IUpdateBuilder updateBuilder = dbContext.Update(sqlGenerator.getTableName<TEntity>(null));
