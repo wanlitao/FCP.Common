@@ -13,8 +13,8 @@ namespace FCP.Service
         IRepository<TEntity> repository { get; }
 
         /// <summary>
-        /// 操作单元
+        /// 打开操作单元
         /// </summary>
-        IUnitOfWork workUnit { get; }
+        IUnitOfWork openWorkUnit();
     }
 }

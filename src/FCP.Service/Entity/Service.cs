@@ -27,11 +27,11 @@ namespace FCP.Service
         public IRepository<TEntity> repository { get { return _repository; } }
 
         /// <summary>
-        /// 操作单元
+        /// 打开操作单元
         /// </summary>
-        public IUnitOfWork workUnit
+        public IUnitOfWork openWorkUnit()
         {
-            get { return new UnitOfWork(_repository.dbContext); }
+            return new UnitOfWork(_repository.dbContext);
         }
     }
 }
