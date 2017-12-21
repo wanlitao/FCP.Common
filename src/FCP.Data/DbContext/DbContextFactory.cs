@@ -97,6 +97,12 @@ namespace FCP.Data
                 .OnError(traceDbError);
         }
 
+        public IDbContext openDbContext(System.Data.Common.DbProviderFactory adoNetProviderFactory)
+        {
+            return new DbContext().ConnectionString(connectionString, dbProvider, adoNetProviderFactory)
+                .OnError(traceDbError);
+        }
+
         /// <summary>
         /// 记录数据库执行异常
         /// </summary>

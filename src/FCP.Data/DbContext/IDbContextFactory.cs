@@ -1,8 +1,4 @@
 ﻿using FluentData;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace FCP.Data
 {
@@ -31,5 +27,11 @@ namespace FCP.Data
         /// </summary>
         /// <returns></returns>
         IDbContext openDbContext();
+
+        /// <summary>
+        /// 新建数据库会话
+        /// </summary>
+        /// <returns></returns>
+        IDbContext openDbContext(System.Data.Common.DbProviderFactory adoNetProviderFactory);
     }
 }
