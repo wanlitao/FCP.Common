@@ -278,7 +278,13 @@ namespace FCP.Data
         protected void setSelectBuilderWherePredicate<TEntity, TResult>(ISelectBuilder<TResult> selectBuilder,
             Expression<Func<TEntity, bool>> predicateExpr) where TEntity : class
         {
-            if (selectBuilder == null || predicateExpr == null)
+            if (selectBuilder == null)
+                return;
+
+            //设置 删除标识 where条件
+            checkSetSelectBuilderDeleteFlagWhere<TEntity, TResult>(selectBuilder);
+
+            if (predicateExpr == null)
                 return;
 
             QuerySql keyWhereSql = exprQueryTranslator.TranslateSql(predicateExpr);
@@ -292,9 +298,6 @@ namespace FCP.Data
                         ParameterDirection.Input, parameter.QueryType.Length);
                 }
             }
-
-            //设置 删除标识 where条件
-            checkSetSelectBuilderDeleteFlagWhere<TEntity, TResult>(selectBuilder);
         }
 
         /// <summary>
@@ -448,7 +451,7 @@ namespace FCP.Data
         }
         #endregion
 
-        #region update更新        
+        #region update更新
         /// <summary>
         /// 更新实体
         /// </summary>
