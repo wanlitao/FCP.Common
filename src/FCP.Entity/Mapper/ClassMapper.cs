@@ -5,6 +5,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Numerics;
 using System.Reflection;
+using FCP.Util;
 
 namespace FCP.Entity
 {
@@ -43,6 +44,15 @@ namespace FCP.Entity
 
             properties = new List<IPropertyMap>();
             table(typeof(TEntity).Name);
+        }
+
+        public ClassMapper(string deleteFlagName)
+            : this()
+        {
+            if (!deleteFlagName.isNullOrEmpty())
+            {
+                deleteFlagPropertyName = deleteFlagName;
+            }
         }
 
         #region Mapping配置
