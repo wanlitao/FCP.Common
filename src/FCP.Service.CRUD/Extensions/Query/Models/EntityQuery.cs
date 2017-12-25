@@ -85,11 +85,17 @@ namespace FCP.Service.CRUD
         /// <summary>
         /// 添加忽略字段
         /// </summary>
-        /// <param name="propertyExpression"></param>
+        /// <param name="propertyExpressions"></param>
         /// <returns></returns>
-        public EntityQuery<TEntity> Ignore(Expression<Func<TEntity, object>> propertyExpression)
+        public EntityQuery<TEntity> Ignore(params Expression<Func<TEntity, object>>[] propertyExpressions)
         {
-            IgnorePropertyExpressions.Add(propertyExpression);
+            if (propertyExpressions.isNotEmpty())
+            {
+                foreach(var propertyExpression in propertyExpressions)
+                {
+                    IgnorePropertyExpressions.Add(propertyExpression);
+                }
+            }
 
             return this;
         }
@@ -109,11 +115,17 @@ namespace FCP.Service.CRUD
         /// <summary>
         /// 添加升序排序字段
         /// </summary>        
-        /// <param name="propertyExpression"></param>
+        /// <param name="propertyExpressions"></param>
         /// <returns></returns>
-        public EntityQuery<TEntity> OrderByAsc(Expression<Func<TEntity, object>> propertyExpression)
+        public EntityQuery<TEntity> OrderByAsc(params Expression<Func<TEntity, object>>[] propertyExpressions)
         {
-            OrderByProperties.Add(propertyExpression, OrderByType.Asc);
+            if (propertyExpressions.isNotEmpty())
+            {
+                foreach(var propertyExpression in propertyExpressions)
+                {
+                    OrderByProperties.Add(propertyExpression, OrderByType.Asc);
+                }
+            }
 
             return this;
         }
@@ -121,11 +133,17 @@ namespace FCP.Service.CRUD
         /// <summary>
         /// 添加降序排序字段
         /// </summary>        
-        /// <param name="propertyExpression"></param>
+        /// <param name="propertyExpressions"></param>
         /// <returns></returns>
-        public EntityQuery<TEntity> OrderByDesc(Expression<Func<TEntity, object>> propertyExpression)
+        public EntityQuery<TEntity> OrderByDesc(params Expression<Func<TEntity, object>>[] propertyExpressions)
         {
-            OrderByProperties.Add(propertyExpression, OrderByType.Desc);
+            if (propertyExpressions.isNotEmpty())
+            {
+                foreach (var propertyExpression in propertyExpressions)
+                {
+                    OrderByProperties.Add(propertyExpression, OrderByType.Desc);
+                }
+            }
 
             return this;
         }
