@@ -55,11 +55,17 @@ namespace FCP.Service.CRUD
         /// <summary>
         /// 添加where条件
         /// </summary>        
-        /// <param name="whereCondition"></param>
+        /// <param name="whereConditions"></param>
         /// <returns></returns>
-        public EntityQuery<TEntity> Where(Expression<Func<TEntity, bool>> whereCondition)
+        public EntityQuery<TEntity> Where(params Expression<Func<TEntity, bool>>[] whereConditions)
         {
-            WhereConditions.Add(whereCondition);
+            if (whereConditions.isNotEmpty())
+            {
+                foreach(var whereCondition in whereConditions)
+                {
+                    WhereConditions.Add(whereCondition);
+                }
+            }
 
             return this;
         }
