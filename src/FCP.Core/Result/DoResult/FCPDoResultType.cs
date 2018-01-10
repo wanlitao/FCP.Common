@@ -20,14 +20,6 @@
         /// <summary>
         /// 未找到
         /// </summary>
-        notFound,
-        /// <summary>
-        /// 未认证
-        /// </summary>
-        unauthorized,
-        /// <summary>
-        /// 未授权
-        /// </summary>
-        forbidden
+        notFound        
     }
 }

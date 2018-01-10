@@ -147,50 +147,6 @@ namespace FCP.Core
         {
             return new FCPDoResult<TResultData> { type = FCPDoResultType.notFound.ToString(), msg = resultMsg };
         }
-        #endregion
-
-        #region 执行未认证
-        /// <summary>
-        /// 执行未认证
-        /// </summary>
-        /// <param name="resultMsg">结果消息</param>
-        /// <returns></returns>
-        public static FCPDoResult doUnauthorized(string resultMsg)
-        {
-            return new FCPDoResult { type = FCPDoResultType.unauthorized.ToString(), msg = resultMsg };
-        }
-
-        /// <summary>
-        /// 执行未认证
-        /// </summary>
-        /// <param name="resultMsg">结果消息</param>
-        /// <returns></returns>
-        public static FCPDoResult<TResultData> doUnauthorized<TResultData>(string resultMsg)
-        {
-            return new FCPDoResult<TResultData> { type = FCPDoResultType.unauthorized.ToString(), msg = resultMsg };
-        }
-        #endregion
-
-        #region 执行未授权
-        /// <summary>
-        /// 执行未授权
-        /// </summary>
-        /// <param name="resultMsg">结果消息</param>
-        /// <returns></returns>
-        public static FCPDoResult doForbidden(string resultMsg)
-        {
-            return new FCPDoResult { type = FCPDoResultType.forbidden.ToString(), msg = resultMsg };
-        }
-
-        /// <summary>
-        /// 执行未授权
-        /// </summary>
-        /// <param name="resultMsg">结果消息</param>
-        /// <returns></returns>
-        public static FCPDoResult<TResultData> doForbidden<TResultData>(string resultMsg)
-        {
-            return new FCPDoResult<TResultData> { type = FCPDoResultType.forbidden.ToString(), msg = resultMsg };
-        }
-        #endregion
+        #endregion        
     }
 }
