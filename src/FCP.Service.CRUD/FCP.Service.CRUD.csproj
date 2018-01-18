@@ -47,6 +47,7 @@
     <Compile Include="Entity\CRUDService.cs" />
     <Compile Include="Entity\ICRUDService.cs" />
     <Compile Include="Extensions\Query\CRUDServiceQueryExtensions.cs" />
+    <Compile Include="Extensions\Query\Models\DynamicDataReader.cs" />
     <Compile Include="Extensions\Query\Models\EntityQuery.cs" />
     <Compile Include="Extensions\Query\Models\NativeQuery.cs" />
     <Compile Include="Extensions\Query\Models\OrderByType.cs" />

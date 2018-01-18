@@ -99,14 +99,25 @@ namespace FCP.Service.CRUD
         /// <param name="queryInfo">查询条件</param>
         /// <returns></returns>
         public static FCPDoResult<TResult> GetSingle<TEntity, TResult>(this ICRUDService<TEntity> service,
-            NativeQuery queryInfo) where TEntity : class
+            NativeQuery queryInfo, Action<TResult, IDataReader> customMapper = null) where TEntity : class
         {
             if (queryInfo == null)
                 throw new ArgumentNullException(nameof(queryInfo));
 
             var selectBuilder = BuildNativeQuerySelectBuilder<TEntity, TResult>(service, queryInfo);
 
-            return selectBuilder.GetSingle();
+            return selectBuilder.GetSingle(customMapper);
+        }
+
+        /// <summary>
+        /// 获取单个实体
+        /// </summary>
+        /// <param name="queryInfo">查询条件</param>
+        /// <returns></returns>
+        public static FCPDoResult<TResult> GetSingle<TEntity, TResult>(this ICRUDService<TEntity> service,
+            NativeQuery queryInfo, Action<TResult, dynamic> customMapper) where TEntity : class
+        {
+            return GetSingle(service, queryInfo, ConvertDataReaderMapper(customMapper));
         }
 
         /// <summary>
@@ -115,14 +126,25 @@ namespace FCP.Service.CRUD
         /// <param name="queryInfo">查询条件</param>
         /// <returns></returns>
         public static FCPDoResult<IList<TResult>> GetList<TEntity, TResult>(this ICRUDService<TEntity> service,
-            NativeQuery queryInfo) where TEntity : class
+            NativeQuery queryInfo, Action<TResult, IDataReader> customMapper = null) where TEntity : class
         {
             if (queryInfo == null)
                 throw new ArgumentNullException(nameof(queryInfo));
 
             var selectBuilder = BuildNativeQuerySelectBuilder<TEntity, TResult>(service, queryInfo);
 
-            return selectBuilder.GetList();
+            return selectBuilder.GetList(customMapper);
+        }
+
+        /// <summary>
+        /// 获取列表
+        /// </summary>
+        /// <param name="queryInfo">查询条件</param>
+        /// <returns></returns>
+        public static FCPDoResult<IList<TResult>> GetList<TEntity, TResult>(this ICRUDService<TEntity> service,
+            NativeQuery queryInfo, Action<TResult, dynamic> customMapper) where TEntity : class
+        {
+            return GetList(service, queryInfo, ConvertDataReaderMapper(customMapper));
         }
 
         /// <summary>
@@ -131,7 +153,7 @@ namespace FCP.Service.CRUD
         /// <param name="queryInfo">查询条件</param>
         /// <returns></returns>
         public static FCPDoResult<FCPPageData<TResult>> GetPageList<TEntity, TResult>(this ICRUDService<TEntity> service,
-            int currentPage, int pageSize, NativeQuery queryInfo)
+            int currentPage, int pageSize, NativeQuery queryInfo, Action<TResult, IDataReader> customMapper = null)
             where TEntity : class
             where TResult : class
         {
@@ -140,10 +162,37 @@ namespace FCP.Service.CRUD
 
             var selectBuilder = BuildNativeQuerySelectBuilder<TEntity, TResult>(service, queryInfo);
 
-            return selectBuilder.GetPageList(currentPage, pageSize);
+            return selectBuilder.GetPageList(currentPage, pageSize, customMapper);
+        }
+
+        /// <summary>
+        /// 获取分页列表
+        /// </summary>
+        /// <param name="queryInfo">查询条件</param>
+        /// <returns></returns>
+        public static FCPDoResult<FCPPageData<TResult>> GetPageList<TEntity, TResult>(this ICRUDService<TEntity> service,
+            int currentPage, int pageSize, NativeQuery queryInfo, Action<TResult, dynamic> customMapper)
+            where TEntity : class
+            where TResult : class
+        {
+            return GetPageList(service, currentPage, pageSize, queryInfo, ConvertDataReaderMapper(customMapper));
         }
 
         #region Helper Functions
+        /// <summary>
+        /// Convert to DataReader Mapper
+        /// </summary>
+        /// <typeparam name="TResult"></typeparam>
+        /// <param name="customMapper"></param>
+        /// <returns></returns>
+        private static Action<TResult, IDataReader> ConvertDataReaderMapper<TResult>(Action<TResult, dynamic> customMapper)
+        {
+            if (customMapper == null)
+                return null;
+
+            return (result, reader) => customMapper.Invoke(result, new DynamicDataReader(reader.InnerReader));
+        }
+
         /// <summary>
         /// 构造Native查询SelectBuilder
         /// </summary>

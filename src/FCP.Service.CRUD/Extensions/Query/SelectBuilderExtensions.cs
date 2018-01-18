@@ -12,23 +12,26 @@ namespace FCP.Service.CRUD
     /// </summary>
     internal static class SelectBuilderExtensions
     {
-        internal static FCPDoResult<TResult> GetSingle<TResult>(this ISelectBuilder<TResult> selectBuilder)
+        internal static FCPDoResult<TResult> GetSingle<TResult>(this ISelectBuilder<TResult> selectBuilder,
+            Action<TResult, IDataReader> customMapper = null)
         {
-            var result = selectBuilder.QuerySingle();
+            var result = selectBuilder.QuerySingle(customMapper);
 
             return result == null ? FCPDoResultHelper.doNotFound<TResult>("not found any record")
                 : FCPDoResultHelper.doSuccess(result);
         }
 
-        internal static FCPDoResult<IList<TResult>> GetList<TResult>(this ISelectBuilder<TResult> selectBuilder)
+        internal static FCPDoResult<IList<TResult>> GetList<TResult>(this ISelectBuilder<TResult> selectBuilder,
+            Action<TResult, IDataReader> customMapper = null)
         {
-            var results = selectBuilder.QueryMany();
+            var results = selectBuilder.QueryMany(customMapper);
 
             return results.isEmpty() ? FCPDoResultHelper.doNotFound<IList<TResult>>("not found any record")
                 : FCPDoResultHelper.doSuccess<IList<TResult>>(results);
         }
 
-        internal static FCPDoResult<FCPPageData<TResult>> GetPageList<TResult>(this ISelectBuilder<TResult> selectBuilder, int currentPage, int pageSize)
+        internal static FCPDoResult<FCPPageData<TResult>> GetPageList<TResult>(this ISelectBuilder<TResult> selectBuilder,
+            int currentPage, int pageSize, Action<TResult, IDataReader> customMapper = null)
             where TResult : class
         {
             if (currentPage < 1)
@@ -39,7 +42,7 @@ namespace FCP.Service.CRUD
 
             var pageData = new FCPPageData<TResult>() { pageIndex = currentPage, pageSize = pageSize };
 
-            pageData.data = selectBuilder.Paging(currentPage, pageSize).QueryMany();
+            pageData.data = selectBuilder.Paging(currentPage, pageSize).QueryMany(customMapper);
             pageData.total = selectBuilder.FormatRecordCountSelectBuilder().QuerySingle();
 
             return pageData.data.isEmpty() ? FCPDoResultHelper.doNotFound<FCPPageData<TResult>>("not found any record of target page")
