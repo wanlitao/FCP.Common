@@ -5,6 +5,7 @@ using System.Reflection;
 using FCP.Util;
 using ExprTranslator.Query;
 using FluentData;
+using System.Linq.Expressions;
 
 namespace FCP.Data
 {
@@ -13,7 +14,7 @@ namespace FCP.Data
     /// </summary>
     public class ExprQueryTranslatorFactory
     {
-        private static readonly IDictionary<string, Type> _exprQueryTranslatorTypes;  //表达式查询translator类型缓存        
+        private static readonly IDictionary<string, Func<IExprQueryTranslator>> _exprQueryTranslatorFactories;  //表达式查询translator类型工厂缓存        
         private static readonly IDictionary<string, string> _providerTranslatorMap;  //数据库provider与表达式查询translator名称映射
 
         static ExprQueryTranslatorFactory()
@@ -23,13 +24,15 @@ namespace FCP.Data
 
             Assembly assembly = typeof(IExprQueryTranslator).Assembly;
             List<Type> list = assembly.GetExportedTypes().Where(type => type.IsConcrete() && type.Is<IExprQueryTranslator>()).ToList<Type>();
-            SortedDictionary<string, Type> sortedDictionary = new SortedDictionary<string, Type>();
+            var sortedDictionary = new SortedDictionary<string, Func<IExprQueryTranslator>>();
 			foreach (Type currentType in list)
 			{                
                 string keyName = currentType.Name.Replace("QueryTranslator", string.Empty);
-                sortedDictionary.Add(keyName, currentType);
+                var instanceFactory = buildExprQueryTranslatorInstanceFactory(currentType);
+
+                sortedDictionary.Add(keyName, instanceFactory);
 			}
-            _exprQueryTranslatorTypes = sortedDictionary;
+            _exprQueryTranslatorFactories = sortedDictionary;
 		}
 
         private static void setProviderTranslatorMap()
@@ -42,6 +45,14 @@ namespace FCP.Data
             _providerTranslatorMap.Add("System.Data.OleDb", "Access");
         }
 
+        private static Func<IExprQueryTranslator> buildExprQueryTranslatorInstanceFactory(Type exprQueryTranslatorType)
+        {
+            var newQueryTranslatorExpr = Expression.New(exprQueryTranslatorType);
+            var conversionExpr = Expression.Convert(newQueryTranslatorExpr, typeof(IExprQueryTranslator));
+
+            return Expression.Lambda<Func<IExprQueryTranslator>>(conversionExpr).Compile();
+        }
+
         /// <summary>
         /// 获取表达式查询translator
         /// </summary>
@@ -49,11 +60,11 @@ namespace FCP.Data
         /// <returns></returns>
         public IExprQueryTranslator getExprQueryTranslator(string translatorName)
         {
-            var matchQueryTranslatorType = _exprQueryTranslatorTypes
+            var matchQueryTranslatorFactory = _exprQueryTranslatorFactories
                 .Where(m => StringUtil.compareIgnoreCase(m.Key, translatorName) || m.Key.isNullOrEmpty())
                 .OrderByDescending(m => m.Key).Select(m => m.Value).FirstOrDefault();
 
-            return (IExprQueryTranslator)Activator.CreateInstance(matchQueryTranslatorType);
+            return matchQueryTranslatorFactory?.Invoke();
         }
 
         /// <summary>
@@ -78,7 +89,7 @@ namespace FCP.Data
         /// <returns></returns>
         public string listAvailableExprQueryTranslatorTypes()
         {
-            return string.Join(", ", _exprQueryTranslatorTypes.Keys.ToArray());
+            return string.Join(", ", _exprQueryTranslatorFactories.Keys.ToArray());
         }
     }
 }

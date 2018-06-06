@@ -1,10 +1,7 @@
-﻿using FluentData;
-using ExprTranslator.Query;
-using System.Linq.Expressions;
+﻿using FCP.Entity;
+using FluentData;
 using System;
-using System.Collections.Generic;
-using System.Reflection;
-using FCP.Entity;
+using System.Linq.Expressions;
 
 namespace FCP.Data
 {
@@ -17,11 +14,6 @@ namespace FCP.Data
         /// Fluent查询Sql生成器
         /// </summary>
         ISqlGenerator sqlGenerator { get; }
-
-        /// <summary>
-        /// 表达式查询translator
-        /// </summary>
-        IExprQueryTranslator exprQueryTranslator { get; }
 
         #region 获取属性表达式
         /// <summary>

@@ -21,9 +21,6 @@ namespace FCP.Data
         public DbContextImplementor(IEntityConfiguration configuration, IDbProvider fluentDbProvider)
         {
             sqlGenerator = new SqlGenerator(configuration, fluentDbProvider);
-
-            exprQueryTranslator = exprQueryTranslatorFactory.getExprQueryTranslatorByDbProvider(fluentDbProvider);
-            exprQueryTranslator.MemberColumnNameConverter = exprQueryEntityMemberColumnNameConverter;
         }
 
         /// <summary>
@@ -31,12 +28,19 @@ namespace FCP.Data
         /// </summary>
         public ISqlGenerator sqlGenerator { get; private set; }
 
-        /// <summary>
-        /// 表达式查询translator
-        /// </summary>
-        public IExprQueryTranslator exprQueryTranslator { get; private set; }
-
         #region 公共方法
+        /// <summary>
+        /// 获取表达式查询translator
+        /// </summary>
+        /// <returns></returns>
+        protected IExprQueryTranslator getExprQueryTranslator()
+        {
+            var exprQueryTranslator = exprQueryTranslatorFactory.getExprQueryTranslatorByDbProvider(sqlGenerator.dbProvider);
+            exprQueryTranslator.MemberColumnNameConverter = exprQueryEntityMemberColumnNameConverter;
+
+            return exprQueryTranslator;
+        }
+
         /// <summary>
         /// 表达式查询中实体属性转换列名
         /// </summary>
@@ -287,12 +291,13 @@ namespace FCP.Data
             if (predicateExpr == null)
                 return;
 
-            QuerySql keyWhereSql = exprQueryTranslator.TranslateSql(predicateExpr);
+            var exprQueryTranslator = getExprQueryTranslator();
+            QuerySql predicateWhereSql = exprQueryTranslator.TranslateSql(predicateExpr);
 
-            selectBuilder.AndWhere(keyWhereSql.whereStr);
-            if (keyWhereSql.parameters.isNotEmpty())
+            selectBuilder.AndWhere(predicateWhereSql.whereStr);
+            if (predicateWhereSql.parameters.isNotEmpty())
             {
-                foreach (var parameter in keyWhereSql.parameters)
+                foreach (var parameter in predicateWhereSql.parameters)
                 {
                     selectBuilder.Parameter(parameter.Name, parameter.Value, DataTypes.Object,
                         ParameterDirection.Input, parameter.QueryType.Length);
