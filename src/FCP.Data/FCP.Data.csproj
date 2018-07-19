@@ -34,9 +34,8 @@
       <HintPath>..\..\packages\ExprTranslator.1.0.0.1\lib\net40\ExprTranslator.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="ExprTranslator.Query, Version=1.0.0.4, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\ExprTranslator.Query.1.0.0.4\lib\net40\ExprTranslator.Query.dll</HintPath>
-      <Private>True</Private>
+    <Reference Include="ExprTranslator.Query, Version=1.0.1.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\ExprTranslator.Query.1.0.1\lib\net40\ExprTranslator.Query.dll</HintPath>
     </Reference>
     <Reference Include="FCP.FluentData, Version=1.0.1.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\..\packages\FCP.FluentData.1.0.1\lib\net40\FCP.FluentData.dll</HintPath>
